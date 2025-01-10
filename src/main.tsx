@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import { RouterProvider } from 'react-router-dom';
-import { theme } from './theme/theme.ts';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import BreakpointsProvider from 'providers/BreakpointsProvider.tsx';
-import router from 'routes/router.tsx';
+import { BrowserRouter as Router } from 'react-router-dom';
+import App from './App';
+import './css/style.css';
+import './css/satoshi.css';
+import 'jsvectormap/dist/css/jsvectormap.css';
+import 'flatpickr/dist/flatpickr.min.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <BreakpointsProvider>
-        <CssBaseline />
-        <RouterProvider router={router} />
-      </BreakpointsProvider>
-    </ThemeProvider>
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>,
 );
