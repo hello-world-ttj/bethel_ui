@@ -1,33 +1,47 @@
-import { Package } from '../../types/package';
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getMember, deleteUser } from "../../api/userApi";
+import { User } from "../../types/user";
+const UserTable = () => {
+  const [packageData, setPackageData] = useState<User[]>([]);
+  const [isChange, setIsChange] = useState<boolean>(false);
 
-const packageData: Package[] = [
-  {
-    name: 'Free package',
-    price: 0.0,
-    invoiceDate: `Jan 13,2023`,
-    status: 'Paid',
-  },
-  {
-    name: 'Standard Package',
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: 'Paid',
-  },
-  {
-    name: 'Business Package',
-    price: 99.0,
-    invoiceDate: `Jan 13,2023`,
-    status: 'Unpaid',
-  },
-  {
-    name: 'Standard Package',
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: 'Pending',
-  },
-];
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await getMember({
+          page: 1,
+        });
 
-const TableThree = () => {
+        if (response?.data) {
+          setPackageData(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch members:", error);
+      }
+    };
+
+    fetchMembers();
+  }, [isChange]);
+  const handleDelete = async (id: string) => {
+    const userConfirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (!userConfirmed) {
+      console.log("User deletion canceled.");
+      return;
+    }
+
+    try {
+      await deleteUser(id);
+      setIsChange((prevState) => !prevState);
+      console.log(`User with ID ${id} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting user with ID ${id}:`, error);
+    }
+  };
+
+  const navigate = useNavigate();
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -35,10 +49,16 @@ const TableThree = () => {
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                Package
+                Name
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Invoice date
+                Address
+              </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Email
+              </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Phone
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Status
@@ -55,21 +75,31 @@ const TableThree = () => {
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}
                   </h5>
-                  <p className="text-sm">${packageItem.price}</p>
+                  {/* <p className="text-sm">{packageItem.name}</p> */}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.invoiceDate}
+                    {packageItem.address}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.email}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.phone}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === 'Paid'
-                        ? 'bg-success text-success'
-                        : packageItem.status === 'Unpaid'
-                        ? 'bg-danger text-danger'
-                        : 'bg-warning text-warning'
+                      packageItem.status === "Paid"
+                        ? "bg-success text-success"
+                        : packageItem.status === "Unpaid"
+                        ? "bg-danger text-danger"
+                        : "bg-warning text-warning"
                     }`}
                   >
                     {packageItem.status}
@@ -96,7 +126,10 @@ const TableThree = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button
+                      onClick={() => handleDelete(packageItem._id)}
+                      className="hover:text-danger"
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -123,7 +156,17 @@ const TableThree = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() =>
+                        navigate("/add-user", {
+                          state: {
+                            id: packageItem._id,
+                            editMode: true,
+                          },
+                        })
+                      }
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -132,14 +175,7 @@ const TableThree = () => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path
-                          d="M16.8754 11.6719C16.5379 11.6719 16.2285 11.9531 16.2285 12.3187V14.8219C16.2285 15.075 16.0316 15.2719 15.7785 15.2719H2.22227C1.96914 15.2719 1.77227 15.075 1.77227 14.8219V12.3187C1.77227 11.9812 1.49102 11.6719 1.12539 11.6719C0.759766 11.6719 0.478516 11.9531 0.478516 12.3187V14.8219C0.478516 15.7781 1.23789 16.5375 2.19414 16.5375H15.7785C16.7348 16.5375 17.4941 15.7781 17.4941 14.8219V12.3187C17.5223 11.9531 17.2129 11.6719 16.8754 11.6719Z"
-                          fill=""
-                        />
-                        <path
-                          d="M8.55074 12.3469C8.66324 12.4594 8.83199 12.5156 9.00074 12.5156C9.16949 12.5156 9.31012 12.4594 9.45074 12.3469L13.4726 8.43752C13.7257 8.1844 13.7257 7.79065 13.5007 7.53752C13.2476 7.2844 12.8539 7.2844 12.6007 7.5094L9.64762 10.4063V2.1094C9.64762 1.7719 9.36637 1.46252 9.00074 1.46252C8.66324 1.46252 8.35387 1.74377 8.35387 2.1094V10.4063L5.40074 7.53752C5.14762 7.2844 4.75387 7.31252 4.50074 7.53752C4.24762 7.79065 4.27574 8.1844 4.50074 8.43752L8.55074 12.3469Z"
-                          fill=""
-                        />
+                        <path d="M13.232 2.768a1 1 0 0 1 1.416 0l2.5 2.5a1 1 0 0 1 0 1.416L6.865 13.571a1 1 0 0 1-.366.211l-2.142.643a1 1 0 0 1-1.224-1.224l.643-2.142a1 1 0 0 1 .211-.366L13.232 2.768z" />
                       </svg>
                     </button>
                   </div>
@@ -153,4 +189,4 @@ const TableThree = () => {
   );
 };
 
-export default TableThree;
+export default UserTable;

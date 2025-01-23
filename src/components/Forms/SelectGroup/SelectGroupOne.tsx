@@ -1,45 +1,48 @@
-import React, { useState } from 'react';
-
-const SelectGroupOne: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('');
+import React, { useEffect, useState } from "react";
+import { getChurch } from "../../../api/churchApi";
+import {Church} from '../../../types/church';
+const SelectGroupOne: React.FC<{ onChurchChange: (value: string) => void; selectedChurch: string }> = ({ onChurchChange, selectedChurch }) => {
+  const [selectedOption, setSelectedOption] = useState<Church[]>([]);
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
-  const changeTextColor = () => {
+ 
+  useEffect(() => {
+    const fetchChurches = async () => {
+      const response = await getChurch();
+      setSelectedOption(response.data);
+    };
+    fetchChurches();
+  }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    onChurchChange(value);
     setIsOptionSelected(true);
   };
 
   return (
     <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">
-        {' '}
-        Subject{' '}
-      </label>
-
+      <label className="mb-2.5 block text-black dark:text-white">Church</label>
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
-          value={selectedOption}
-          onChange={(e) => {
-            setSelectedOption(e.target.value);
-            changeTextColor();
-          }}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-            isOptionSelected ? 'text-black dark:text-white' : ''
+          value={selectedChurch}
+          onChange={handleChange}
+          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-[#f09443] active:border-[#f09443] dark:border-form-strokedark dark:bg-form-input dark:focus:border-[#f09443] ${
+            isOptionSelected ? "text-black dark:text-white" : ""
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select your subject
+            Select your Church
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
-            USA
-          </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            UK
-          </option>
-          <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
-          </option>
+          {selectedOption.map((church) => (
+            <option
+              key={church._id}
+              value={church._id}
+              className="text-body dark:text-bodydark"
+            >
+              {church.name}
+            </option>
+          ))}
         </select>
-
         <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
           <svg
             className="fill-current"
