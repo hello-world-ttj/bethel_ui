@@ -1,16 +1,62 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMember, deleteUser } from "../../api/userApi";
+import { getMember, deleteUser, getUserById } from "../../api/userApi";
 import { User } from "../../types/user";
-const UserTable = () => {
+interface UserTableProps {
+  searchValue: string;
+}
+
+const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<User[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    church: "",
+    status: "",
+  });
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const handleOpen = (id: string) => {
+    setSelectedId(id);
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedId(null);
+  };
+  const handleView = async (id: string) => {
+    try {
+      const response = await getUserById(id);
+      const user = response.data;
+
+      if (user) {
+        setUserData({
+          name: user.name || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          address: user.address || "",
+          church: user.church.name || "",
+          status: user.status || "",
+        });
+      }
+      setView(true);
+    } catch (error) {
+      console.error("Failed to fetch church:", error);
+    }
+  };
+  const handleCloseView = () => {
+    setView(false);
+  };
   useEffect(() => {
     const fetchMembers = async () => {
       try {
         const response = await getMember({
-          page: 1,
+          search: searchValue,
         });
 
         if (response?.data) {
@@ -22,22 +68,16 @@ const UserTable = () => {
     };
 
     fetchMembers();
-  }, [isChange]);
-  const handleDelete = async (id: string) => {
-    const userConfirmed = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    if (!userConfirmed) {
-      console.log("User deletion canceled.");
-      return;
-    }
-
+  }, [isChange, searchValue]);
+  const handleDelete = async () => {
     try {
-      await deleteUser(id);
+      await deleteUser(selectedId!);
       setIsChange((prevState) => !prevState);
-      console.log(`User with ID ${id} deleted successfully.`);
+
+      handleClose();
+      console.log(`User with ID ${selectedId} deleted successfully.`);
     } catch (error) {
-      console.error(`Error deleting user with ID ${id}:`, error);
+      console.error(`Error deleting user with ID ${selectedId}:`, error);
     }
   };
 
@@ -51,14 +91,15 @@ const UserTable = () => {
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Name
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Address
-              </th>
+
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Email
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Phone
+              </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Church
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Status
@@ -77,11 +118,7 @@ const UserTable = () => {
                   </h5>
                   {/* <p className="text-sm">{packageItem.name}</p> */}
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.address}
-                  </p>
-                </td>
+
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {packageItem.email}
@@ -90,6 +127,11 @@ const UserTable = () => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {packageItem.phone}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.church.name}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -107,7 +149,10 @@ const UserTable = () => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleView(packageItem._id)}
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -127,7 +172,7 @@ const UserTable = () => {
                       </svg>
                     </button>
                     <button
-                      onClick={() => handleDelete(packageItem._id)}
+                      onClick={() => handleOpen(packageItem._id)}
                       className="hover:text-danger"
                     >
                       <svg
@@ -184,6 +229,89 @@ const UserTable = () => {
             ))}
           </tbody>
         </table>
+        {open && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Confirm Deletion
+              </h2>
+              <p className="mt-4 text-gray-600">
+                Are you sure you want to delete this user? This action cannot be
+                undone.
+              </p>
+              <div className="mt-6 flex justify-end space-x-4">
+                <button
+                  onClick={handleClose}
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {view && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100">
+              <button
+                onClick={handleCloseView}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                aria-label="Close"
+              >
+                ✖
+              </button>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                  User Details
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <strong className="text-gray-700">Name:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.name || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Email:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.email || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Phone:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.phone || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Address:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.address || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Church:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.church || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Status:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.status || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

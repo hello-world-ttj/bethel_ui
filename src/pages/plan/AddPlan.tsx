@@ -1,47 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createUser, getUserById, updateUser } from "../../api/userApi";
-import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
+import { createPlan, getPlanById, updatePlan } from "../../api/planApi";
 
-const AddUser = () => {
-  const [userData, setUserData] = useState({
+const AddPlan = () => {
+  const [planData, setPlanData] = useState({
     name: "",
-    email: "",
-    phone: "",
-    address: "",
-    church: "",
+    price: "",
+    days: "",
   });
 
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = location;
   const isEditMode = state?.editMode;
-  const userId = state?.id;
+  const planId = state?.id;
 
   useEffect(() => {
-    if (isEditMode && userId) {
-      const fetchUser = async () => {
-        const response = await getUserById(userId);
-        const user = response.data;
+    if (isEditMode && planId) {
+      const fetchPlan = async () => {
+        const response = await getPlanById(planId);
+        const plan = response.data;
 
-        if (user) {
-          setUserData({
-            name: user.name || "",
-            email: user.email || "",
-            phone: user.phone || "",
-            address: user.address || "",
-            church: user.church._id || "",
+        if (plan) {
+          setPlanData({
+            name: plan.name || "",
+            price: plan.price || "",
+            days: plan.days || "",
           });
         }
       };
-      fetchUser();
+      fetchPlan();
     }
-  }, [isEditMode, userId]);
+  }, [isEditMode, planId]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({
+    setPlanData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -49,28 +44,22 @@ const AddUser = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (isEditMode && userId) {
-        await updateUser(userId, userData);
+      if (isEditMode && planId) {
+        await updatePlan(planId, planData);
       } else {
-        await createUser(userData);
+        await createPlan(planData);
       }
-      navigate("/user");
+      navigate("/plan");
     } catch (error) {
-      console.error("Failed to save user", error);
+      console.error("Failed to save plan", error);
     }
-  };
-  const handleChurchChange = (value: string) => {
-    setUserData((prev) => ({
-      ...prev,
-      church: value,
-    }));
   };
 
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-semibold text-black">
-          {userId ? "Edit User" : "Add User"}
+          {planId ? "Edit Plan" : "Add Plan"}
         </h2>
       </div>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -84,64 +73,46 @@ const AddUser = () => {
                 <input
                   type="text"
                   name="name"
-                  value={userData.name}
+                  value={planData.name}
                   onChange={handleChange}
                   placeholder="Enter your name"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
                 />
               </div>
             </div>
-            <div className="mb-4.5">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Email <span className="text-meta-1">*</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-                placeholder="Enter your email address"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
-              />
-            </div>
-            <div className="mb-4.5">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Phone <span className="text-meta-1">*</span>
-              </label>
-              <input
-                type="text"
-                name="phone"
-                value={userData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
-              />
-            </div>
-
-            <SelectGroupOne
-              onChurchChange={handleChurchChange}
-              selectedChurch={userData.church}
-            />
 
             <div className="mb-6">
               <label className="mb-2.5 block text-black dark:text-white">
-                Address
+                Price
               </label>
-              <textarea
-                rows={6}
-                name="address"
-                value={userData.address}
+              <input
+                type="text"
+                name="price"
+                value={planData.price}
                 onChange={handleChange}
-                placeholder="Enter your address"
+                placeholder="Enter the price"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
-              ></textarea>
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Days
+              </label>
+              <input
+                type="text"
+                name="days"
+                value={planData.days}
+                onChange={handleChange}
+                placeholder="Enter the days"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+              />
             </div>
 
             <button
               type="submit"
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"
             >
-              {userId ? "Update" : "Submit"}
+              {planId ? "Update" : "Submit"}
             </button>
           </div>
         </form>
@@ -150,4 +121,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default AddPlan;

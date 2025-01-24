@@ -1,10 +1,5 @@
 import axiosInstance from "./axiosintercepter";
 
-export interface UserFilter {
-  page?: number;
-  pageSize?: number;
-  searchTerm?: string;
-}
 export const createUser = async (data: any): Promise<any | null> => {
   try {
     const response = await axiosInstance.post(`/users`, data);
@@ -14,10 +9,12 @@ export const createUser = async (data: any): Promise<any | null> => {
     return null;
   }
 };
-export const getMember = async (filter: UserFilter): Promise<any | null> => {
+export const getMember = async (params: {
+  search?: string;
+}): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/users`, {
-      params: filter,
+      params,
     });
     return response.data;
   } catch (error) {
@@ -25,6 +22,7 @@ export const getMember = async (filter: UserFilter): Promise<any | null> => {
     return null;
   }
 };
+
 export const getUserById = async (id: string): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/users/${id}`);

@@ -1,18 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
-import { Church } from "../../types/church";
 import { toast } from "react-toastify";
-const ChurchTable = () => {
-  const [packageData, setPackageData] = useState<Church[]>([]);
+import { Plan } from "../../types/plan";
+import { deletePlan, getPlan, getPlanById } from "../../api/planApi";
+const PlanTable = () => {
+  const [packageData, setPackageData] = useState<Plan[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
-  const [churchData, setChurchData] = useState<{
+  const [planData, setPlanData] = useState<{
     name: string;
-    image: string;
-    address: string;
-  }>({ name: "", image: "", address: "" });
+    status: string;
+    price: string;
+    days: string;
+  }>({ name: "", status: "", price: "", days: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const handleOpen = (id: string) => {
     setSelectedId(id);
@@ -25,48 +26,49 @@ const ChurchTable = () => {
   };
   const handleView = async (id: string) => {
     try {
-      const response = await getChurchById(id);
-      const church = response.data;
+      const response = await getPlanById(id);
+      const plan = response.data;
 
-      if (church) {
-        setChurchData({
-          name: church.name || "",
-          image: church.image || "",
-          address: church.address || "",
+      if (plan) {
+        setPlanData({
+          name: plan.name || "",
+          status: plan.status || "",
+          price: plan.price || "",
+          days: plan.days || "",
         });
       }
       setView(true);
     } catch (error) {
-      console.error("Failed to fetch church:", error);
+      console.error("Failed to fetch plan:", error);
     }
   };
   const handleCloseView = () => {
     setView(false);
   };
   useEffect(() => {
-    const fetchChurches = async () => {
+    const fetchPlans = async () => {
       try {
-        const response = await getChurch();
+        const response = await getPlan();
 
         if (response?.data) {
           setPackageData(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch members:", error);
+        console.error("Failed to fetch plans:", error);
       }
     };
 
-    fetchChurches();
+    fetchPlans();
   }, [isChange]);
   const handleDelete = async () => {
     try {
-      await deleteChurch(selectedId!);
+      await deletePlan(selectedId!);
       setIsChange((prevState) => !prevState);
 
       handleClose();
-      toast.success("Church deleted successfully.");
+      toast.success("Plan deleted successfully.");
     } catch (error) {
-      console.error(`Error deleting Church with ID ${selectedId}:`, error);
+      console.error(`Error deleting Plan with ID ${selectedId}:`, error);
     }
   };
 
@@ -81,10 +83,10 @@ const ChurchTable = () => {
                 Name
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Address
+                Price
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Image
+                Days
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -101,16 +103,14 @@ const ChurchTable = () => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.address}
+                    {packageItem.price}
                   </p>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <img
-                    src={packageItem.image}
-                    alt="Package"
-                    className="w-16 h-16 object-cover rounded"
-                  />
+                  <p className="text-black dark:text-white">
+                    {packageItem.days}
+                  </p>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -170,7 +170,7 @@ const ChurchTable = () => {
                     <button
                       className="hover:text-primary"
                       onClick={() =>
-                        navigate("/add-church", {
+                        navigate("/add-plan", {
                           state: {
                             id: packageItem._id,
                             editMode: true,
@@ -202,8 +202,8 @@ const ChurchTable = () => {
                 Confirm Deletion
               </h2>
               <p className="mt-4 text-gray-600">
-                Are you sure you want to delete this church? This action cannot
-                be undone.
+                Are you sure you want to delete this Plan? This action cannot be
+                undone.
               </p>
               <div className="mt-6 flex justify-end space-x-4">
                 <button
@@ -228,18 +228,20 @@ const ChurchTable = () => {
               <button
                 onClick={handleCloseView}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                aria-label="Close"
               >
                 ✖
               </button>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                {churchData.name}
+                {planData.name}
               </h2>
-              <img
-                src={churchData.image}
-                alt={churchData.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-              <p className="text-gray-600">{churchData.address}</p>
+              <div className="text-gray-600 mb-2">
+                <strong>Price:</strong>{" "}
+                {planData.price ? `${planData.price}` : "N/A"}
+              </div>
+              <div className="text-gray-600">
+                <strong>Days:</strong> {planData.days}
+              </div>
             </div>
           </div>
         )}
@@ -248,4 +250,4 @@ const ChurchTable = () => {
   );
 };
 
-export default ChurchTable;
+export default PlanTable;

@@ -1,7 +1,9 @@
+import { Church } from "./church";
+
 export type User = {
   _id: string;
   name: string;
-  church: string;
+  church: Church;
   email: string;
   phone: string;
   status: string;

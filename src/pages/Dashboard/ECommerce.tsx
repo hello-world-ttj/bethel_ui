@@ -1,17 +1,45 @@
-import React from 'react';
-import CardDataStats from '../../components/CardDataStats';
-import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
-import ChartTwo from '../../components/Charts/ChartTwo';
-import ChatCard from '../../components/Chat/ChatCard';
-import MapOne from '../../components/Maps/MapOne';
-import TableOne from '../../components/Tables/TableOne';
+import React, { useEffect, useState } from "react";
+import CardDataStats from "../../components/CardDataStats";
+import TableOne from "../../components/Tables/TableOne";
+import { getDashboard } from "../../api/dashboardApi";
+import { subscription } from "../../types/subscription";
 
 const ECommerce: React.FC = () => {
+  const [dashboard, setDashboard] = useState<{
+    activeUsers: string;
+    subscriptions: string;
+    users: string;
+    churches: string;
+    plans: string;
+    subsList: subscription[];
+  }>({
+    activeUsers: "",
+    subscriptions: "",
+    users: "",
+    churches: "",
+    plans: "",
+    subsList: [],
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getDashboard();
+
+        if (response?.data) {
+          setDashboard(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch members:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log("dashboard", dashboard?.subsList);
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-5 2xl:gap-7.5">
+        <CardDataStats title="Active Users" total={dashboard?.activeUsers}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -28,51 +56,10 @@ const ECommerce: React.FC = () => {
               d="M11 10.9219C9.38438 10.9219 8.07812 9.61562 8.07812 8C8.07812 6.38438 9.38438 5.07812 11 5.07812C12.6156 5.07812 13.9219 6.38438 13.9219 8C13.9219 9.61562 12.6156 10.9219 11 10.9219ZM11 6.625C10.2437 6.625 9.625 7.24375 9.625 8C9.625 8.75625 10.2437 9.375 11 9.375C11.7563 9.375 12.375 8.75625 12.375 8C12.375 7.24375 11.7563 6.625 11 6.625Z"
               fill=""
             />
-          </svg>
-        </CardDataStats>
-        <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
-          <svg
-            className="fill-primary dark:fill-white"
-            width="20"
-            height="22"
-            viewBox="0 0 20 22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M11.7531 16.4312C10.3781 16.4312 9.27808 17.5312 9.27808 18.9062C9.27808 20.2812 10.3781 21.3812 11.7531 21.3812C13.1281 21.3812 14.2281 20.2812 14.2281 18.9062C14.2281 17.5656 13.0937 16.4312 11.7531 16.4312ZM11.7531 19.8687C11.2375 19.8687 10.825 19.4562 10.825 18.9406C10.825 18.425 11.2375 18.0125 11.7531 18.0125C12.2687 18.0125 12.6812 18.425 12.6812 18.9406C12.6812 19.4219 12.2343 19.8687 11.7531 19.8687Z"
-              fill=""
-            />
-            <path
-              d="M5.22183 16.4312C3.84683 16.4312 2.74683 17.5312 2.74683 18.9062C2.74683 20.2812 3.84683 21.3812 5.22183 21.3812C6.59683 21.3812 7.69683 20.2812 7.69683 18.9062C7.69683 17.5656 6.56245 16.4312 5.22183 16.4312ZM5.22183 19.8687C4.7062 19.8687 4.2937 19.4562 4.2937 18.9406C4.2937 18.425 4.7062 18.0125 5.22183 18.0125C5.73745 18.0125 6.14995 18.425 6.14995 18.9406C6.14995 19.4219 5.73745 19.8687 5.22183 19.8687Z"
-              fill=""
-            />
-            <path
-              d="M19.0062 0.618744H17.15C16.325 0.618744 15.6031 1.23749 15.5 2.06249L14.95 6.01562H1.37185C1.0281 6.01562 0.684353 6.18749 0.443728 6.46249C0.237478 6.73749 0.134353 7.11562 0.237478 7.45937C0.237478 7.49374 0.237478 7.49374 0.237478 7.52812L2.36873 13.9562C2.50623 14.4375 2.9531 14.7812 3.46873 14.7812H12.9562C14.2281 14.7812 15.3281 13.8187 15.5 12.5469L16.9437 2.26874C16.9437 2.19999 17.0125 2.16562 17.0812 2.16562H18.9375C19.35 2.16562 19.7281 1.82187 19.7281 1.37499C19.7281 0.928119 19.4187 0.618744 19.0062 0.618744ZM14.0219 12.3062C13.9531 12.8219 13.5062 13.2 12.9906 13.2H3.7781L1.92185 7.56249H14.7094L14.0219 12.3062Z"
-              fill=""
-            />
-          </svg>
-        </CardDataStats>
-        <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp>
-          <svg
-            className="fill-primary dark:fill-white"
-            width="22"
-            height="22"
-            viewBox="0 0 22 22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M21.1063 18.0469L19.3875 3.23126C19.2157 1.71876 17.9438 0.584381 16.3969 0.584381H5.56878C4.05628 0.584381 2.78441 1.71876 2.57816 3.23126L0.859406 18.0469C0.756281 18.9063 1.03128 19.7313 1.61566 20.3844C2.20003 21.0375 2.99066 21.3813 3.85003 21.3813H18.1157C18.975 21.3813 19.8 21.0031 20.35 20.3844C20.9 19.7656 21.2094 18.9063 21.1063 18.0469ZM19.2157 19.3531C18.9407 19.6625 18.5625 19.8344 18.15 19.8344H3.85003C3.43753 19.8344 3.05941 19.6625 2.78441 19.3531C2.50941 19.0438 2.37191 18.6313 2.44066 18.2188L4.12503 3.43751C4.19378 2.71563 4.81253 2.16563 5.56878 2.16563H16.4313C17.1532 2.16563 17.7719 2.71563 17.875 3.43751L19.5938 18.2531C19.6282 18.6656 19.4907 19.0438 19.2157 19.3531Z"
-              fill=""
-            />
-            <path
-              d="M14.3345 5.29375C13.922 5.39688 13.647 5.80938 13.7501 6.22188C13.7845 6.42813 13.8189 6.63438 13.8189 6.80625C13.8189 8.35313 12.547 9.625 11.0001 9.625C9.45327 9.625 8.1814 8.35313 8.1814 6.80625C8.1814 6.6 8.21577 6.42813 8.25015 6.22188C8.35327 5.80938 8.07827 5.39688 7.66577 5.29375C7.25327 5.19063 6.84077 5.46563 6.73765 5.87813C6.6689 6.1875 6.63452 6.49688 6.63452 6.80625C6.63452 9.2125 8.5939 11.1719 11.0001 11.1719C13.4064 11.1719 15.3658 9.2125 15.3658 6.80625C15.3658 6.49688 15.3314 6.1875 15.2626 5.87813C15.1595 5.46563 14.747 5.225 14.3345 5.29375Z"
-              fill=""
-            />
-          </svg>
-        </CardDataStats>
-        <CardDataStats title="Total Users" total="3.456" rate="0.95%" levelDown>
+          </svg>{" "}
+        </CardDataStats>{" "}
+        <CardDataStats title="Total Users" total={dashboard?.users}>
+          {" "}
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -95,17 +82,64 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+        <CardDataStats
+          title="Active Subscriptions"
+          total={dashboard?.subscriptions}
+        >
+          <svg
+            className="fill-primary dark:fill-white"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+              fill=""
+            />
+            <path
+              d="M12 6C10.34 6 9 7.34 9 9H11C11 8.45 11.45 8 12 8C12.55 8 13 8.45 13 9C13 9.55 12.55 10 12 10H11C9.34 10 8 11.34 8 13C8 14.66 9.34 16 11 16V17H13V16C14.66 16 16 14.66 16 13H14C14 13.55 13.55 14 13 14C12.45 14 12 13.55 12 13C12 12.45 12.45 12 13 12H14C14.66 12 16 10.66 16 9C16 7.34 14.66 6 13 6V5H11V6H12Z"
+              fill=""
+            />
+          </svg>
+        </CardDataStats>
+        <CardDataStats title="Church" total={dashboard?.churches}>
+          <svg
+            className="fill-primary dark:fill-white"
+            width="20"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C11.45 2 11 2.45 11 3V6.55L9.05 8.05C8.74 8.28 8.57 8.64 8.57 9.01V10H7C6.45 10 6 10.45 6 11V12C6 12.55 6.45 13 7 13H8.57V20H5C4.45 20 4 20.45 4 21V22H20V21C20 20.45 19.55 20 19 20H15.43V13H17C17.55 13 18 12.55 18 12V11C18 10.45 17.55 10 17 10H15.43V9.01C15.43 8.64 15.26 8.28 14.95 8.05L13 6.55V3C13 2.45 12.55 2 12 2ZM10 20V13H14V20H10Z"
+              fill=""
+            />
+          </svg>
+        </CardDataStats>
+        <CardDataStats title="Plans" total={dashboard?.plans}>
+          <svg
+            className="fill-primary dark:fill-white"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C12.48 2 12.93 2.14 13.3 2.39L19.3 6.39C19.69 6.64 20 7.14 20 7.64V16.64C20 17.54 19.58 18.4 18.86 18.93L13.3 22.39C12.93 22.64 12.48 22.78 12 22.78C11.52 22.78 11.07 22.64 10.7 22.39L5.14 18.93C4.42 18.4 4 17.54 4 16.64V7.64C4 7.14 4.31 6.64 4.7 6.39L10.7 2.39C11.07 2.14 11.52 2 12 2ZM12 4L6 8V16L12 20L18 16V8L12 4ZM12 10.25C12.41 10.25 12.75 10.59 12.75 11V15C12.75 15.41 12.41 15.75 12 15.75C11.59 15.75 11.25 15.41 11.25 15V11C11.25 10.59 11.59 10.25 12 10.25ZM12 9.25C11.59 9.25 11.25 8.91 11.25 8.5C11.25 8.09 11.59 7.75 12 7.75C12.41 7.75 12.75 8.09 12.75 8.5C12.75 8.91 12.41 9.25 12 9.25Z"
+              fill=""
+            />
+          </svg>
+        </CardDataStats>
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-        <MapOne />
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
+        <div className="col-span-12 xl:col-span-12">
+          <TableOne brandData={dashboard?.subsList} />
         </div>
-        <ChatCard />
       </div>
     </>
   );

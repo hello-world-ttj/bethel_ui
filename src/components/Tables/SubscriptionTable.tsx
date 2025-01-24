@@ -1,18 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
-import { Church } from "../../types/church";
 import { toast } from "react-toastify";
-const ChurchTable = () => {
-  const [packageData, setPackageData] = useState<Church[]>([]);
+import { subscription } from "../../types/subscription";
+import {
+  deleteSubscription,
+  getSubscription,
+  getSubscriptionById,
+} from "../../api/subscriptionApi";
+import moment from "moment-timezone";
+const SubscriptionTable = () => {
+  const [packageData, setPackageData] = useState<subscription[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
-  const [churchData, setChurchData] = useState<{
-    name: string;
-    image: string;
-    address: string;
-  }>({ name: "", image: "", address: "" });
+  const [subscriptionData, setSubscriptionData] = useState<{
+    user: string;
+    status: string;
+    expiryDate: string;
+    plan: string;
+    receipt: string;
+  }>({ user: "", status: "", expiryDate: "", plan: "", receipt: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const handleOpen = (id: string) => {
     setSelectedId(id);
@@ -25,48 +32,53 @@ const ChurchTable = () => {
   };
   const handleView = async (id: string) => {
     try {
-      const response = await getChurchById(id);
-      const church = response.data;
+      const response = await getSubscriptionById(id);
+      const subscription = response.data;
 
-      if (church) {
-        setChurchData({
-          name: church.name || "",
-          image: church.image || "",
-          address: church.address || "",
+      if (subscription) {
+        setSubscriptionData({
+          user: subscription.user.name || "",
+          status: subscription.status || "",
+          expiryDate: subscription.expiryDate || "",
+          plan: subscription.plan.name || "",
+          receipt: subscription.receipt || "",
         });
       }
       setView(true);
     } catch (error) {
-      console.error("Failed to fetch church:", error);
+      console.error("Failed to fetch subscription:", error);
     }
   };
   const handleCloseView = () => {
     setView(false);
   };
   useEffect(() => {
-    const fetchChurches = async () => {
+    const fetchSubscriptions = async () => {
       try {
-        const response = await getChurch();
+        const response = await getSubscription();
 
         if (response?.data) {
           setPackageData(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch members:", error);
+        console.error("Failed to fetch subscriptions:", error);
       }
     };
 
-    fetchChurches();
+    fetchSubscriptions();
   }, [isChange]);
   const handleDelete = async () => {
     try {
-      await deleteChurch(selectedId!);
+      await deleteSubscription(selectedId!);
       setIsChange((prevState) => !prevState);
 
       handleClose();
-      toast.success("Church deleted successfully.");
+      toast.success("Subscription deleted successfully.");
     } catch (error) {
-      console.error(`Error deleting Church with ID ${selectedId}:`, error);
+      console.error(
+        `Error deleting subscription with ID ${selectedId}:`,
+        error
+      );
     }
   };
 
@@ -78,13 +90,13 @@ const ChurchTable = () => {
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                Name
+                User
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Address
+                Expiry Date
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Image
+                Plan
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -96,21 +108,19 @@ const ChurchTable = () => {
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.name}
+                    {packageItem.user.name}
                   </h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.address}
+                    {moment(packageItem.expiryDate).format("DD-MM-YYYY")}
                   </p>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <img
-                    src={packageItem.image}
-                    alt="Package"
-                    className="w-16 h-16 object-cover rounded"
-                  />
+                  <p className="text-black dark:text-white">
+                    {packageItem.plan.name}
+                  </p>
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -170,7 +180,7 @@ const ChurchTable = () => {
                     <button
                       className="hover:text-primary"
                       onClick={() =>
-                        navigate("/add-church", {
+                        navigate("/add-subscription", {
                           state: {
                             id: packageItem._id,
                             editMode: true,
@@ -202,8 +212,8 @@ const ChurchTable = () => {
                 Confirm Deletion
               </h2>
               <p className="mt-4 text-gray-600">
-                Are you sure you want to delete this church? This action cannot
-                be undone.
+                Are you sure you want to delete this subscription? This action
+                cannot be undone.
               </p>
               <div className="mt-6 flex justify-end space-x-4">
                 <button
@@ -223,23 +233,30 @@ const ChurchTable = () => {
           </div>
         )}
         {view && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100">
               <button
                 onClick={handleCloseView}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                aria-label="Close"
               >
                 ✖
               </button>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                {churchData.name}
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                {subscriptionData.user}
               </h2>
-              <img
-                src={churchData.image}
-                alt={churchData.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-              <p className="text-gray-600">{churchData.address}</p>
+              <div className="text-center space-y-4">
+                <p className="text-lg text-gray-700 font-medium">
+                  Plan:{" "}
+                  <span className="text-gray-600">{subscriptionData.plan}</span>
+                </p>
+                <p className="text-lg text-gray-700 font-medium">
+                  Expiry Date:{" "}
+                  <span className="text-gray-600">
+                    {moment(subscriptionData.expiryDate).format("YYYY-MM-DD")}
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         )}
@@ -248,4 +265,4 @@ const ChurchTable = () => {
   );
 };
 
-export default ChurchTable;
+export default SubscriptionTable;
