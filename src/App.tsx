@@ -37,7 +37,7 @@ function App() {
           index
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika" />
               <ECommerce />
             </>
           }
@@ -47,7 +47,7 @@ function App() {
           path="/user"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || User" />
               <UserList />
             </>
           }
@@ -56,7 +56,7 @@ function App() {
           path="/church"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Church" />
               <ChurchList />
             </>
           }
@@ -65,7 +65,7 @@ function App() {
           path="/plan"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Plan" />
               <PlanList />
             </>
           }
@@ -74,7 +74,7 @@ function App() {
           path="/subscription"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Subscription" />
               <SubscriptionList />
             </>
           }
@@ -83,7 +83,7 @@ function App() {
           path="/add-user"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || User" />
               <AddUser />
             </>
           }
@@ -92,7 +92,7 @@ function App() {
           path="/add-church"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Church" />
               <AddChurch />
             </>
           }
@@ -101,7 +101,7 @@ function App() {
           path="/add-plan"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Plan" />
               <AddPlan />
             </>
           }
@@ -110,7 +110,7 @@ function App() {
           path="/add-subscription"
           element={
             <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Bethal Patrika || Subscription" />
               <AddSubscription />
             </>
           }
