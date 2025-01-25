@@ -14,7 +14,7 @@ const UserList = () => {
           </h2>
         </div>
 
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full max-w-xs">
           <div className="relative flex items-center dark:bg-graydark  bg-white rounded-lg shadow-md">
             <button
               className="absolute left-3 top-1/2 -translate-y-1/2"
