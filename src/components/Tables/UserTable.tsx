@@ -137,11 +137,15 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === "Paid"
-                        ? "bg-success text-success"
-                        : packageItem.status === "Unpaid"
-                        ? "bg-danger text-danger"
-                        : "bg-warning text-warning"
+                      packageItem.status === "active"
+                        ? "bg-green-500 text-green-600"
+                        : packageItem.status === "inactive"
+                        ? "bg-red-500 text-red-600"
+                        : packageItem.status === "expiring"
+                        ? "bg-yellow-500 text-yellow-600"
+                        : packageItem.status === "expired"
+                        ? "bg-gray-500 text-gray-600"
+                        : "bg-gray-500 text-gray-700"
                     }`}
                   >
                     {packageItem.status}
