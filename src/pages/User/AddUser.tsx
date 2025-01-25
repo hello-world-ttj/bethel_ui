@@ -69,7 +69,7 @@ const AddUser = () => {
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-semibold text-black">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {userId ? "Edit User" : "Add User"}
         </h2>
       </div>
@@ -87,7 +87,7 @@ const AddUser = () => {
                   value={userData.name}
                   onChange={handleChange}
                   placeholder="Enter your name"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
                 />
               </div>
             </div>
@@ -101,7 +101,7 @@ const AddUser = () => {
                 value={userData.email}
                 onChange={handleChange}
                 placeholder="Enter your email address"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
             <div className="mb-4.5">
@@ -114,7 +114,7 @@ const AddUser = () => {
                 value={userData.phone}
                 onChange={handleChange}
                 placeholder="Enter your phone number"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
 
@@ -133,7 +133,7 @@ const AddUser = () => {
                 value={userData.address}
                 onChange={handleChange}
                 placeholder="Enter your address"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
 

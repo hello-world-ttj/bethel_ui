@@ -9,17 +9,17 @@ import {
 import SelectPlan from "../../components/Forms/SelectGroup/SelectPlan";
 
 const AddSubscription = () => {
-  const [subData, setSubData] = useState({
-    receipt: "",
-    expiryDate: "",
-    user: "",
-    plan: "",
-  });
-
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = location;
   const isEditMode = state?.editMode;
+  const [subData, setSubData] = useState(() => ({
+    receipt: "",
+    user: "",
+    plan: "",
+    ...(isEditMode && { expiryDate: "" }),
+  }));
+
   const subId = state?.id;
 
   useEffect(() => {
@@ -32,12 +32,14 @@ const AddSubscription = () => {
           const formattedDate = sub.expiryDate
             ? new Date(sub.expiryDate).toISOString().split("T")[0]
             : "";
-          setSubData({
+          setSubData((prev: any) => ({
+            ...prev,
+            ...(isEditMode && { expiryDate: formattedDate || "" }),
             receipt: sub.receipt || "",
             expiryDate: formattedDate || "",
-            user: sub.user._id|| "",
+            user: sub.user._id || "",
             plan: sub.plan._id || "",
-          });
+          }));
         }
       };
       fetchSub();
@@ -49,7 +51,7 @@ const AddSubscription = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setSubData((prev) => ({
+    setSubData((prev: any) => ({
       ...prev,
       [name]: value,
     }));
@@ -69,13 +71,13 @@ const AddSubscription = () => {
   };
 
   const handleUserChange = (value: string) => {
-    setSubData((prev) => ({
+    setSubData((prev: any) => ({
       ...prev,
       user: value,
     }));
   };
   const handlePlanChange = (value: string) => {
-    setSubData((prev) => ({
+    setSubData((prev: any) => ({
       ...prev,
       plan: value,
     }));
@@ -83,7 +85,7 @@ const AddSubscription = () => {
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-semibold text-black">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {subId ? "Edit Subscription" : "Add Subscription"}
         </h2>
       </div>
@@ -94,19 +96,22 @@ const AddSubscription = () => {
               onUserChange={handleUserChange}
               selectedUser={subData.user}
             />
-            <div className="mb-4.5">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Expiry Date <span className="text-meta-1">*</span>
-              </label>
-              <input
-                type="date"
-                name="expiryDate"
-                value={subData.expiryDate}
-                onChange={handleChange}
-                placeholder="Enter expiry date"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
-              />
-            </div>
+            {isEditMode && (
+              <div className="mb-4.5">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Expiry Date <span className="text-meta-1">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="expiryDate"
+                  value={subData.expiryDate}
+                  onChange={handleChange}
+                  disabled
+                  placeholder="Enter expiry date"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                />
+              </div>
+            )}
             <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
                 Receipt Number
@@ -117,7 +122,7 @@ const AddSubscription = () => {
                 value={subData.receipt}
                 onChange={handleChange}
                 placeholder="Enter receipt number"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
             <SelectPlan

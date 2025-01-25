@@ -58,7 +58,7 @@ const AddPlan = () => {
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-semibold text-black">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {planId ? "Edit Plan" : "Add Plan"}
         </h2>
       </div>
@@ -76,7 +76,7 @@ const AddPlan = () => {
                   value={planData.name}
                   onChange={handleChange}
                   placeholder="Enter your name"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
                 />
               </div>
             </div>
@@ -91,7 +91,7 @@ const AddPlan = () => {
                 value={planData.price}
                 onChange={handleChange}
                 placeholder="Enter the price"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
             <div className="mb-6">
@@ -104,7 +104,7 @@ const AddPlan = () => {
                 value={planData.days}
                 onChange={handleChange}
                 placeholder="Enter the days"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443]"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
 
