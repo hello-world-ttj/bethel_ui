@@ -7,14 +7,14 @@ import { subscription } from "../../types/subscription";
 const ECommerce: React.FC = () => {
   const [dashboard, setDashboard] = useState<{
     activeUsers: string;
-    subscriptions: string;
+    twilioBalance: string;
     users: string;
     churches: string;
     plans: string;
     subsList: subscription[];
   }>({
     activeUsers: "",
-    subscriptions: "",
+    twilioBalance: "",
     users: "",
     churches: "",
     plans: "",
@@ -83,8 +83,8 @@ const ECommerce: React.FC = () => {
           </svg>
         </CardDataStats>
         <CardDataStats
-          title="Active Subscriptions"
-          total={dashboard?.subscriptions}
+          title="Twilio Balance"
+          total={dashboard?.twilioBalance}
         >
           <svg
             className="fill-primary dark:fill-white"
