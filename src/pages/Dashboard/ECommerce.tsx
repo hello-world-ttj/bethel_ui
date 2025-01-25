@@ -83,8 +83,8 @@ const ECommerce: React.FC = () => {
           </svg>
         </CardDataStats>
         <CardDataStats
-          title="Twilio Balance"
-          total={dashboard?.twilioBalance}
+          title="SMS Balance"
+          total={`$${dashboard?.twilioBalance}`}
         >
           <svg
             className="fill-primary dark:fill-white"
