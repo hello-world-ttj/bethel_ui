@@ -14,7 +14,7 @@ const PlanList = () => {
         </div>
         
         <div className="relative w-full max-w-xs">
-          <div className="relative flex items-center bg-white rounded-lg shadow-md">
+          <div className="relative flex items-center bg-white dark:bg-graydark  rounded-lg shadow-md">
             <button className="absolute left-3 top-1/2 -translate-y-1/2">
               <svg
                 className="fill-gray-500 fill-primary"
@@ -44,7 +44,7 @@ const PlanList = () => {
               placeholder="Type to search..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full bg-white pl-10 pr-4 py-2.5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full bg-white  dark:bg-graydark dark:text-white pl-10 pr-4 py-2.5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-primary "
             />
           </div>
         </div>
