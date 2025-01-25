@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Plan } from "../../types/plan";
 import { deletePlan, getPlan, getPlanById } from "../../api/planApi";
-const PlanTable = () => {
+interface PlanTableProps {
+  searchValue: string;
+}
+const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<Plan[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
@@ -48,7 +51,9 @@ const PlanTable = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await getPlan();
+        const response = await getPlan({
+          search: searchValue,
+        });
 
         if (response?.data) {
           setPackageData(response.data);
@@ -59,7 +64,7 @@ const PlanTable = () => {
     };
 
     fetchPlans();
-  }, [isChange]);
+  }, [isChange, searchValue]);
   const handleDelete = async () => {
     try {
       await deletePlan(selectedId!);

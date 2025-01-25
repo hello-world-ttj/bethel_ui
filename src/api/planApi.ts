@@ -9,9 +9,11 @@ export const createPlan = async (data: any): Promise<any | null> => {
     return null;
   }
 };
-export const getPlan = async (): Promise<any | null> => {
+export const getPlan = async (params: { search?: string }): Promise<any | null> => {
   try {
-    const response = await axiosInstance.get(`/plans`);
+    const response = await axiosInstance.get(`/plans`,{
+      params
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to fetch members:", error);

@@ -9,9 +9,11 @@ export const createSubscription = async (data: any): Promise<any | null> => {
     return null;
   }
 };
-export const getSubscription = async (): Promise<any | null> => {
+export const getSubscription = async (params: { search?: string }): Promise<any | null> => {
   try {
-    const response = await axiosInstance.get(`/subscription`);
+    const response = await axiosInstance.get(`/subscription`,{
+      params
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to fetch members:", error);

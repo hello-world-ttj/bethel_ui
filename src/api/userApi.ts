@@ -22,6 +22,22 @@ export const getMember = async (params: {
     return null;
   }
 };
+export const getMemberChurch = async (
+  id: string,
+  params: {
+    search?: string;
+  }
+): Promise<any | null> => {
+  try {
+    const response = await axiosInstance.get(`/users/church/${id}`, {
+      params,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch members:", error);
+    return null;
+  }
+};
 
 export const getUserById = async (id: string): Promise<any | null> => {
   try {

@@ -8,9 +8,11 @@ export const createChurch = async (data: any): Promise<any | null> => {
       return null;
     }
   };
-export const getChurch = async (): Promise<any | null> => {
+export const getChurch = async (params: { search?: string }): Promise<any | null> => {
   try {
-    const response = await axiosInstance.get(`/church`);
+    const response = await axiosInstance.get(`/church`,{
+      params
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to fetch members:", error);

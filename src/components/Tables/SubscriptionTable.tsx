@@ -8,7 +8,10 @@ import {
   getSubscriptionById,
 } from "../../api/subscriptionApi";
 import moment from "moment-timezone";
-const SubscriptionTable = () => {
+interface SubscriptionTableProps {
+  searchValue: string;
+}
+const SubscriptionTable: React.FC<SubscriptionTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<subscription[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
@@ -55,7 +58,9 @@ const SubscriptionTable = () => {
   useEffect(() => {
     const fetchSubscriptions = async () => {
       try {
-        const response = await getSubscription();
+        const response = await getSubscription({
+          search: searchValue,
+        });
 
         if (response?.data) {
           setPackageData(response.data);
@@ -66,7 +71,7 @@ const SubscriptionTable = () => {
     };
 
     fetchSubscriptions();
-  }, [isChange]);
+  }, [isChange,searchValue]);
   const handleDelete = async () => {
     try {
       await deleteSubscription(selectedId!);
@@ -99,6 +104,9 @@ const SubscriptionTable = () => {
                 Plan
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Receipt Number
+              </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Actions
               </th>
             </tr>
@@ -120,6 +128,11 @@ const SubscriptionTable = () => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {packageItem.plan.name}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.receipt}
                   </p>
                 </td>
 

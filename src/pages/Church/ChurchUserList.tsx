@@ -1,18 +1,40 @@
-import { Link } from "react-router-dom";
-import ChurchTable from "../../components/Tables/ChurchTable";
 import { useState } from "react";
+import UserSubTable from "../../components/Tables/UserSubTable";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const ChurchList = () => {
-  const [searchValue, setSearchValue] = useState<string>("");
+const ChurchUserList = () => {
+  const [searchValue, setSearchValue] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { state } = location;
+  const church = state.name;
   return (
     <>
       <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-7.5 justify-between">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white ">
-            Church List
+          {/* Back button SVG */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
+            onClick={() =>navigate(-1) } // Replace with your back navigation logic
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+
+          <h2 className="text-title-sm font-semibold text-black dark:text-white">
+            <span className="text-blue-600">{church}</span> / User List
           </h2>
         </div>
-        <div className="relative w-full max-w-md">
+
+        <div className="relative w-full max-w-xs">
           <div className="relative flex items-center bg-white rounded-lg shadow-md">
             <button className="absolute left-3 top-1/2 -translate-y-1/2">
               <svg
@@ -47,8 +69,9 @@ const ChurchList = () => {
             />
           </div>
         </div>
+
         <Link
-          to="/add-church"
+          to="/add-user"
           className="inline-flex items-center justify-center gap-2.5 bg-[#f09443] py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
         >
           <span>
@@ -66,13 +89,13 @@ const ChurchList = () => {
               />
             </svg>
           </span>
-          Add Church
+          Add User
         </Link>
       </div>
 
-      <ChurchTable searchValue={searchValue} />
+      <UserSubTable searchValue={searchValue} />
     </>
   );
 };
 
-export default ChurchList;
+export default ChurchUserList;

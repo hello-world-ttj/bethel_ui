@@ -15,6 +15,8 @@ import PlanList from "./pages/plan/PlanList";
 import AddPlan from "./pages/plan/AddPlan";
 import AddSubscription from "./pages/subscription/AddSubscription";
 import SubscriptionList from "./pages/subscription/SubscriptionList";
+import UserSubTable from "./components/Tables/UserSubTable";
+import ChurchUserList from "./pages/Church/ChurchUserList";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -98,6 +100,15 @@ function App() {
           }
         />
         <Route
+          path="/church/:id"
+          element={
+            <>
+              <PageTitle title="Bethal Patrika || Church" />
+              <ChurchUserList />
+            </>
+          }
+        />
+        <Route
           path="/add-plan"
           element={
             <>
@@ -106,6 +117,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/add-subscription"
           element={

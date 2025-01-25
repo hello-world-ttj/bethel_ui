@@ -35,8 +35,8 @@ const AddSubscription = () => {
           setSubData({
             receipt: sub.receipt || "",
             expiryDate: formattedDate || "",
-            user: sub.user || "",
-            plan: sub.plan || "",
+            user: sub.user._id|| "",
+            plan: sub.plan._id || "",
           });
         }
       };

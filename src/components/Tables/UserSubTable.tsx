@@ -1,22 +1,25 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
-import { Church } from "../../types/church";
-import { toast } from "react-toastify";
-interface ChurchTableProps {
+import { getMember, deleteUser, getUserById, getMemberChurch } from "../../api/userApi";
+import { User } from "../../types/user";
+interface UserTableProps {
   searchValue: string;
 }
 
-const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
-  const [packageData, setPackageData] = useState<Church[]>([]);
+const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
+  const [packageData, setPackageData] = useState<User[]>([]);
+  const {id}=useParams();
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
-  const [churchData, setChurchData] = useState<{
-    name: string;
-    image: string;
-    address: string;
-  }>({ name: "", image: "", address: "" });
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    church: "",
+    status: "",
+  });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const handleOpen = (id: string) => {
     setSelectedId(id);
@@ -29,14 +32,17 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   };
   const handleView = async (id: string) => {
     try {
-      const response = await getChurchById(id);
-      const church = response.data;
+      const response = await getUserById(id);
+      const user = response.data;
 
-      if (church) {
-        setChurchData({
-          name: church.name || "",
-          image: church.image || "",
-          address: church.address || "",
+      if (user) {
+        setUserData({
+          name: user.name || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          address: user.address || "",
+          church: user.church.name || "",
+          status: user.status || "",
         });
       }
       setView(true);
@@ -48,12 +54,10 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
     setView(false);
   };
   useEffect(() => {
-    const fetchChurches = async () => {
+    const fetchMembers = async () => {
       try {
-        const response = await getChurch({
-          search: searchValue,
-        });
-
+        const response = await getMemberChurch(id || "", { search: searchValue });
+  
         if (response?.data) {
           setPackageData(response.data);
         }
@@ -61,18 +65,19 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
         console.error("Failed to fetch members:", error);
       }
     };
-
-    fetchChurches();
-  }, [isChange, searchValue]);
+  
+    if (id) fetchMembers();
+  }, [id, isChange, searchValue]);
+  
   const handleDelete = async () => {
     try {
-      await deleteChurch(selectedId!);
+      await deleteUser(selectedId!);
       setIsChange((prevState) => !prevState);
 
       handleClose();
-      toast.success("Church deleted successfully.");
+      console.log(`User with ID ${selectedId} deleted successfully.`);
     } catch (error) {
-      console.error(`Error deleting Church with ID ${selectedId}:`, error);
+      console.error(`Error deleting user with ID ${selectedId}:`, error);
     }
   };
 
@@ -86,13 +91,20 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Name
               </th>
+
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Address
+                Email
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Image
+                Phone
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Church
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Status
+              </th>
+              <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
               </th>
             </tr>
@@ -101,36 +113,40 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
             {packageData.map((packageItem, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <div
-                    className="font-medium text-blue-600  cursor-pointer  "
-                    onClick={() => {
-                      navigate(`/church/${packageItem._id}`, {
-                        state: {
-                          name: packageItem.name,
-                        },
-                      });
-                    }}
-                  >
-                    {" "}
-                    <h5 className="font-medium text-blue-600 dark:text-white hover:underline">
-                      {packageItem.name}
-                    </h5>
-                  </div>
+                  <h5 className="font-medium text-black dark:text-white">
+                    {packageItem.name}
+                  </h5>
+                  {/* <p className="text-sm">{packageItem.name}</p> */}
+                </td>
+
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.email}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.address}
+                    {packageItem.phone}
                   </p>
                 </td>
-
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <img
-                    src={packageItem.image}
-                    alt="Package"
-                    className="w-16 h-16 object-cover rounded"
-                  />
+                  <p className="text-black dark:text-white">
+                    {packageItem.church.name}
+                  </p>
                 </td>
-
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      packageItem.status === "Paid"
+                        ? "bg-success text-success"
+                        : packageItem.status === "Unpaid"
+                        ? "bg-danger text-danger"
+                        : "bg-warning text-warning"
+                    }`}
+                  >
+                    {packageItem.status}
+                  </p>
+                </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
                     <button
@@ -188,7 +204,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                     <button
                       className="hover:text-primary"
                       onClick={() =>
-                        navigate("/add-church", {
+                        navigate("/add-user", {
                           state: {
                             id: packageItem._id,
                             editMode: true,
@@ -220,8 +236,8 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                 Confirm Deletion
               </h2>
               <p className="mt-4 text-gray-600">
-                Are you sure you want to delete this church? This action cannot
-                be undone.
+                Are you sure you want to delete this user? This action cannot be
+                undone.
               </p>
               <div className="mt-6 flex justify-end space-x-4">
                 <button
@@ -241,23 +257,58 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
           </div>
         )}
         {view && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100">
               <button
                 onClick={handleCloseView}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                aria-label="Close"
               >
                 ✖
               </button>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                {churchData.name}
-              </h2>
-              <img
-                src={churchData.image}
-                alt={churchData.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-              <p className="text-gray-600">{churchData.address}</p>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                  User Details
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <strong className="text-gray-700">Name:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.name || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Email:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.email || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Phone:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.phone || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Address:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.address || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Church:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.church || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-700">Status:</strong>{" "}
+                    <span className="text-gray-600">
+                      {userData.status || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -266,4 +317,4 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   );
 };
 
-export default ChurchTable;
+export default UserSubTable;
