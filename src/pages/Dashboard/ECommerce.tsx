@@ -13,11 +13,11 @@ const ECommerce: React.FC = () => {
     plans: string;
     subsList: subscription[];
   }>({
-    activeUsers: "",
-    twilioBalance: "",
-    users: "",
-    churches: "",
-    plans: "",
+    activeUsers: "0",
+    twilioBalance: "0",
+    users: "0",
+    churches: "0",
+    plans: "0",
     subsList: [],
   });
   useEffect(() => {
