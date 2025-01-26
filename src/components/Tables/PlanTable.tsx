@@ -269,7 +269,7 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
           <select
             value={itemsPerPage}
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            className="px-2 py-1 border rounded text-gray-700"
+            className="px-2 py-1 border rounded text-gray-700 dark:bg-transparent"
           >
             <option value={10}>10</option>
             <option value={20}>20</option>
