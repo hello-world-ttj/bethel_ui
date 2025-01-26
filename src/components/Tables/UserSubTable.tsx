@@ -105,7 +105,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className={`w-full table-auto ${open ? "blur-sm" : ""}`}>
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
@@ -251,7 +251,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
         </table>
         {open && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+            <div className="bg-white rounded-lg shadow-lg w-96 p-6 dark:bg-graydark">
               <h2 className="text-xl font-semibold text-gray-800">
                 Confirm Deletion
               </h2>
@@ -333,7 +333,11 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
           </div>
         )}
       </div>
-      <div className="mt-4 flex justify-between items-center">
+      <div
+        className={`mt-4 flex justify-between items-center ${
+          open ? "blur-sm" : ""
+        }`}
+      >
         <div className="flex items-center space-x-2">
           <span className="text-gray-700">Items per page:</span>
           <select
