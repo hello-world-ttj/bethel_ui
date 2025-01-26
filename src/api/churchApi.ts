@@ -8,7 +8,7 @@ export const createChurch = async (data: any): Promise<any | null> => {
       return null;
     }
   };
-export const getChurch = async (params: { search?: string }): Promise<any | null> => {
+export const getChurch = async (params: { search?: string ,limit?:number,page?:number,church?:string}): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/church`,{
       params

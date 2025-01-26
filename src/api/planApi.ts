@@ -9,7 +9,10 @@ export const createPlan = async (data: any): Promise<any | null> => {
     return null;
   }
 };
-export const getPlan = async (params: { search?: string }): Promise<any | null> => {
+export const getPlan = async (params: { search?: string ;
+  limit?: number;
+  page?: number;
+}): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/plans`,{
       params

@@ -7,12 +7,14 @@ import {
   updateSubscription,
 } from "../../api/subscriptionApi";
 import SelectPlan from "../../components/Forms/SelectGroup/SelectPlan";
+import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
 
 const AddSubscription = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = location;
   const isEditMode = state?.editMode;
+  const [selectedChurch, setSelectedChurch] = useState("");
   const [subData, setSubData] = useState(() => ({
     receipt: "",
     user: "",
@@ -40,12 +42,12 @@ const AddSubscription = () => {
             user: sub.user._id || "",
             plan: sub.plan._id || "",
           }));
+          setSelectedChurch(sub.user.church);
         }
       };
       fetchSub();
     }
   }, [isEditMode, subId]);
-  console.log("{subData.expiryDate}", subData.expiryDate);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -71,20 +73,45 @@ const AddSubscription = () => {
   };
 
   const handleUserChange = (value: string) => {
+    console.log("value");
     setSubData((prev: any) => ({
       ...prev,
       user: value,
     }));
   };
+  console.log(subData.user);
+
   const handlePlanChange = (value: string) => {
     setSubData((prev: any) => ({
       ...prev,
       plan: value,
     }));
   };
+  const handleChurchChange = (value: string) => {
+    setSelectedChurch(value);
+    setSubData((prev: any) => ({
+      ...prev,
+      user: "",
+    }));
+  };
   return (
     <div className="flex flex-col gap-9">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-self-start">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
+          onClick={() => navigate(-1)} // Replace with your back navigation logic
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>{" "}
         <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {subId ? "Edit Subscription" : "Add Subscription"}
         </h2>
@@ -92,9 +119,14 @@ const AddSubscription = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <form onSubmit={handleSubmit}>
           <div className="p-6.5">
+            <SelectGroupOne
+              onChurchChange={handleChurchChange}
+              selectedChurch={selectedChurch}
+            />
             <SelectUser
               onUserChange={handleUserChange}
               selectedUser={subData.user}
+              selectedChurch={selectedChurch}
             />
             {isEditMode && (
               <div className="mb-4.5">

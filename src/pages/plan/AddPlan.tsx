@@ -57,8 +57,22 @@ const AddPlan = () => {
 
   return (
     <div className="flex flex-col gap-9">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
+      <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
+            onClick={() =>navigate(-1) } // Replace with your back navigation logic
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>  <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {planId ? "Edit Plan" : "Add Plan"}
         </h2>
       </div>

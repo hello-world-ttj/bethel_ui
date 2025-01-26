@@ -4,9 +4,10 @@ import { getMember, deleteUser, getUserById } from "../../api/userApi";
 import { User } from "../../types/user";
 interface UserTableProps {
   searchValue: string;
+  tab: string;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
+const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const [packageData, setPackageData] = useState<User[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
@@ -20,6 +21,10 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
     status: "",
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const handleOpen = (id: string) => {
     setSelectedId(id);
     setOpen(true);
@@ -29,6 +34,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
     setOpen(false);
     setSelectedId(null);
   };
+
   const handleView = async (id: string) => {
     try {
       const response = await getUserById(id);
@@ -57,8 +63,11 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
       try {
         const response = await getMember({
           search: searchValue,
+          page: currentPage,
+          limit: itemsPerPage,
+          ...(tab !== "all" && { status: tab }),
         });
-
+        setTotalCount(response.totalCount);
         if (response?.data) {
           setPackageData(response.data);
         }
@@ -68,7 +77,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
     };
 
     fetchMembers();
-  }, [isChange, searchValue]);
+  }, [isChange, searchValue, tab, currentPage, itemsPerPage]);
   const handleDelete = async () => {
     try {
       await deleteUser(selectedId!);
@@ -80,7 +89,13 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
       console.error(`Error deleting user with ID ${selectedId}:`, error);
     }
   };
+  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
 
+  const handlePageChange = (page: number) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
   const navigate = useNavigate();
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -144,7 +159,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
                         : packageItem.status === "expiring"
                         ? "bg-yellow-500 text-yellow-600"
                         : packageItem.status === "expired"
-                        ? "bg-gray-500 text-gray-600"
+                        ? "bg-blue-500 text-gray-600"
                         : "bg-gray-500 text-gray-700"
                     }`}
                   >
@@ -233,6 +248,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
             ))}
           </tbody>
         </table>
+
         {open && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg w-96 p-6">
@@ -316,6 +332,61 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue }) => {
             </div>
           </div>
         )}
+      </div>
+      <div className="mt-4 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <span className="text-gray-700">Items per page:</span>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            className="px-2 py-1 border rounded text-gray-700"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
+          <div className="flex space-x-2">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 rounded ${
+                    page === currentPage
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+          </div>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

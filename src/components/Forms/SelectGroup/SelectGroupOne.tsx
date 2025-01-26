@@ -8,7 +8,9 @@ const SelectGroupOne: React.FC<{ onChurchChange: (value: string) => void; select
  
   useEffect(() => {
     const fetchChurches = async () => {
-      const response = await getChurch();
+      const response = await getChurch({
+        church:"all"
+      });
       setSelectedOption(response.data);
     };
     fetchChurches();

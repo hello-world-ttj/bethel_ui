@@ -4,7 +4,13 @@ import { useState } from "react";
 
 const UserList = () => {
   const [searchValue, setSearchValue] = useState("");
-  
+  const [activeTab, setActiveTab] = useState("all"); // Track the active tab
+
+  // Function to handle tab click
+  const handleTabChange = (a: string) => {
+    setActiveTab(a as any);
+  };
+
   return (
     <>
       <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-7.5 justify-between">
@@ -15,11 +21,8 @@ const UserList = () => {
         </div>
 
         <div className="relative w-full max-w-xs">
-          <div className="relative flex items-center dark:bg-graydark  bg-white rounded-lg shadow-md">
-            <button
-              className="absolute left-3 top-1/2 -translate-y-1/2"
-              
-            >
+          <div className="relative flex items-center dark:bg-graydark bg-white rounded-lg shadow-md">
+            <button className="absolute left-3 top-1/2 -translate-y-1/2">
               <svg
                 className="fill-gray-500 fill-primary"
                 width="20"
@@ -76,7 +79,23 @@ const UserList = () => {
         </Link>
       </div>
 
-      <UserTable searchValue={searchValue} />
+      <div className="flex gap-4 mb-6">
+        {["all", "active", "inactive", "expiring", "expired"].map((tabs) => (
+          <button
+            key={tabs}
+            className={`py-2 px-4 rounded ${
+              activeTab === tabs
+                ? "bg-primary text-white"
+                : "bg-gray-200 text-black"
+            }`}
+            onClick={() => handleTabChange(tabs)}
+          >
+            {tabs.charAt(0).toUpperCase() + tabs.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <UserTable searchValue={searchValue} tab={activeTab} />
     </>
   );
 };

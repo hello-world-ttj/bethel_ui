@@ -18,6 +18,10 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
     days: string;
   }>({ name: "", status: "", price: "", days: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const handleOpen = (id: string) => {
     setSelectedId(id);
     setOpen(true);
@@ -53,8 +57,10 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
       try {
         const response = await getPlan({
           search: searchValue,
+          page: currentPage,
+          limit: itemsPerPage,
         });
-
+        setTotalCount(response.totalCount);
         if (response?.data) {
           setPackageData(response.data);
         }
@@ -64,7 +70,7 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
     };
 
     fetchPlans();
-  }, [isChange, searchValue]);
+  }, [isChange, searchValue, currentPage, itemsPerPage]);
   const handleDelete = async () => {
     try {
       await deletePlan(selectedId!);
@@ -76,7 +82,13 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
       console.error(`Error deleting Plan with ID ${selectedId}:`, error);
     }
   };
+  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
 
+  const handlePageChange = (page: number) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
   const navigate = useNavigate();
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -250,6 +262,61 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
             </div>
           </div>
         )}
+      </div>
+      <div className="mt-4 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <span className="text-gray-700">Items per page:</span>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            className="px-2 py-1 border rounded text-gray-700"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
+          <div className="flex space-x-2">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 rounded ${
+                    page === currentPage
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+          </div>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

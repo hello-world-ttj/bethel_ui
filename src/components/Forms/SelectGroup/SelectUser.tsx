@@ -1,23 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { User } from "../../../types/user";
-import { getMember } from "../../../api/userApi";
-const SelectUser: React.FC<{ onUserChange: (value: string) => void; selectedUser: string }> = ({ onUserChange, selectedUser }) => {
-  const [selectedOption, setSelectedOption] = useState<User[]>([]);
-  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
+import { getMemberChurch } from "../../../api/userApi";
 
- 
+interface SelectUserProps {
+  onUserChange: (value: string) => void;
+  selectedUser: string;
+  selectedChurch: string;
+}
+
+const SelectUser: React.FC<SelectUserProps> = ({ onUserChange, selectedUser, selectedChurch }) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await getMember();
-      setSelectedOption(response.data);
-    };
-    fetchUsers();
-  }, []);
+    if (selectedChurch) {
+      const fetchUsers = async () => {
+        try {
+          const response = await getMemberChurch(selectedChurch, { search: "" ,limit:"all"});
+          setUsers(response.data || []);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      };
+      fetchUsers();
+    }
+  }, [selectedChurch]);
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
+    console.log("Dropdown value selected:", value); // Add this line
     onUserChange(value);
     setIsOptionSelected(true);
   };
+  
 
   return (
     <div className="mb-4.5">
@@ -31,14 +46,10 @@ const SelectUser: React.FC<{ onUserChange: (value: string) => void; selectedUser
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select your User
+            Select a User
           </option>
-          {selectedOption.map((user) => (
-            <option
-              key={user._id}
-              value={user._id}
-              className="text-body dark:text-bodydark"
-            >
+          {users.map((user) => (
+            <option key={user._id} value={user._id} className="text-body dark:text-bodydark">
               {user.name}
             </option>
           ))}

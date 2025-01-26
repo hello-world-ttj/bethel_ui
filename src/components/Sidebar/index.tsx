@@ -60,7 +60,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-6.5 ">
+      <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-0 ">
         <NavLink
           to="/"
           className="flex items-center  gap-2 pt-8 font-semibold text-xl text-[#333] hover:text-[#f09443] transition-colors duration-300 ease-in-out dark:text-white"
@@ -258,6 +258,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
         </nav>
+      </div>
+      <div className="mt-auto flex items-center justify-center py-4 px-6">
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          Crafted by{" "}
+          <a href="http://tijotjoseph.in/" target="_blank" className="text-[#f09443] hover:underline">
+          hello_world.ttj
+          </a>
+        </span>
       </div>
     </aside>
   );

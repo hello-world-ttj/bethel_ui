@@ -11,6 +11,9 @@ export const createUser = async (data: any): Promise<any | null> => {
 };
 export const getMember = async (params: {
   search?: string;
+  status?: string;
+  limit?: number;
+  page?: number;
 }): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/users`, {
@@ -26,6 +29,9 @@ export const getMemberChurch = async (
   id: string,
   params: {
     search?: string;
+    limit?: number;
+    page?: number;
+    church?: string;  
   }
 ): Promise<any | null> => {
   try {
