@@ -16,7 +16,7 @@ const SelectUser: React.FC<SelectUserProps> = ({ onUserChange, selectedUser, sel
     if (selectedChurch) {
       const fetchUsers = async () => {
         try {
-          const response = await getMemberChurch(selectedChurch, { search: "" ,limit:"all"});
+          const response = await getMemberChurch(selectedChurch, { search: "" ,church:"all"});
           setUsers(response.data || []);
         } catch (error) {
           console.error("Error fetching users:", error);

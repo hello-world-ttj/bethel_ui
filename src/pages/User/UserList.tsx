@@ -85,8 +85,8 @@ const UserList = () => {
             key={tabs}
             className={`py-2 px-4 rounded ${
               activeTab === tabs
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-black"
+                ? "bg-primary text-white dark:bg-primary dark:text-white"
+                : "bg-gray-200 text-black dark:bg-graydark dark:text-white"
             }`}
             onClick={() => handleTabChange(tabs)}
           >

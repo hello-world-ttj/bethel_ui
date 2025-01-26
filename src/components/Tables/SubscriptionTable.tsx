@@ -29,7 +29,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   }>({ user: "", status: "", expiryDate: "", plan: "", receipt: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const handleOpen = (id: string) => {
     setSelectedId(id);

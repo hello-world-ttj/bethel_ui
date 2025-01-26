@@ -77,13 +77,13 @@ const SubscriptionList = () => {
         </Link>
       </div>
       <div className="flex gap-4 mb-6">
-        {["all", "active",  "expiring", "expired"].map((tabs) => (
+        {["all", "active", "expiring", "expired"].map((tabs) => (
           <button
             key={tabs}
             className={`py-2 px-4 rounded ${
               activeTab === tabs
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-black"
+                ? "bg-primary text-white dark:bg-primary dark:text-white"
+                : "bg-gray-200 text-black dark:bg-graydark dark:text-white"
             }`}
             onClick={() => handleTabChange(tabs)}
           >
@@ -91,7 +91,7 @@ const SubscriptionList = () => {
           </button>
         ))}
       </div>
-      <SubscriptionTable searchValue={searchValue} tab={activeTab}/>
+      <SubscriptionTable searchValue={searchValue} tab={activeTab} />
     </>
   );
 };
