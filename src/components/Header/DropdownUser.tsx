@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import { getAdmin } from '../../api/authApi';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+const [admin,setAdmin] = useState(false); 
+useEffect(() => {
+  const fetchAdmin=async()=>{
+    const response = await getAdmin();
+    setAdmin(response?.data);
+  }
+  fetchAdmin();
+},[]);
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -15,7 +23,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {admin?.name}
           </span>
           {/* <span className="block text-xs">UX Designer</span> */}
         </span>

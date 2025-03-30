@@ -1,12 +1,13 @@
+import { toast } from "react-toastify";
 import axiosInstance from "./axiosintercepter";
 
 export const createUser = async (data: any): Promise<any | null> => {
   try {
     const response = await axiosInstance.post(`/users`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to create user:", error);
-    return null;
+  } catch (error : any) {
+    throw error.response.data;
   }
 };
 export const getMember = async (params: {
@@ -60,18 +61,18 @@ export const updateUser = async (
 ): Promise<any | null> => {
   try {
     const response = await axiosInstance.put(`/users/${id}`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to update user:", error);
-    return null;
+  } catch (error : any) {
+    throw error.response.data;
   }
 };
 export const deleteUser = async (id: string): Promise<any | null> => {
   try {
     const response = await axiosInstance.delete(`/users/${id}`);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to delete user:", error);
-    return null;
+  } catch (error : any) {
+    throw error.response.data;
   }
 };

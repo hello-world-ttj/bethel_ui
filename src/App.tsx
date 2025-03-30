@@ -15,7 +15,6 @@ import AddSubscription from "./pages/subscription/AddSubscription";
 import SubscriptionList from "./pages/subscription/SubscriptionList";
 import ChurchUserList from "./pages/Church/ChurchUserList";
 import SignIn from "./pages/authentication/SignIn";
-import SignUp from "./pages/authentication/SignUp";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,6 +36,15 @@ function App() {
         index
         element={
           <>
+            <PageTitle title="Bethal Patrika" />
+            <SignIn />
+          </>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika" />
               <ECommerce />
@@ -44,7 +52,6 @@ function App() {
           </>
         }
       />
-
       <Route
         path="/user"
         element={
@@ -142,15 +149,6 @@ function App() {
               <PageTitle title="Bethal Patrika || Subscription" />
               <AddSubscription />
             </DefaultLayout>
-          </>
-        }
-      />
-      <Route
-        path="/signin"
-        element={
-          <>
-            <PageTitle title="Signin | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <SignIn />
           </>
         }
       />

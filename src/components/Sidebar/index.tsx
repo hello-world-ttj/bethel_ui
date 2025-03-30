@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import image from "../../images/bethel.png";
+import { toast } from "react-toastify";
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -9,7 +10,7 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
-
+  const navigate = useNavigate();
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
 
@@ -62,7 +63,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-0 ">
         <NavLink
-          to="/"
+          to="/dashboard"
           className="flex items-center  gap-2 pt-8 font-semibold text-xl text-[#333] hover:text-[#f09443] transition-colors duration-300 ease-in-out dark:text-white"
         >
           <img src={image} alt="Logo" className="w-26 h-28" />
@@ -97,7 +98,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-9.5">
               <li>
                 <NavLink
-                  to="/"
+                  to="/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:bg-[#f09443]  hover:text-white dark:hover:bg-meta-4 ${
                     (pathname === "/" || pathname.includes("dashboard")) &&
                     "bg-[#f09443] text-white"
@@ -234,6 +235,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <button
                   className={`group relative w-full flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:bg-[#f09443] hover:text-white dark:hover:bg-meta-4`}
+                  onClick={() => {
+                    localStorage.removeItem("423455ehlsls");
+                    toast.success("Logout successful");
+                    navigate("/");
+                  }}
                 >
                   <svg
                     className="fill-current"
@@ -262,8 +268,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       <div className="mt-auto flex items-center justify-center py-4 px-6">
         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
           Crafted by{" "}
-          <a href="http://tijotjoseph.in/" target="_blank" className="text-[#f09443] hover:underline">
-          hello_world.ttj
+          <a
+            href="http://tijotjoseph.in/"
+            target="_blank"
+            className="text-[#f09443] hover:underline"
+          >
+            hello_world.ttj
           </a>
         </span>
       </div>

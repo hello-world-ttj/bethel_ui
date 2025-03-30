@@ -28,7 +28,6 @@ const SelectUser: React.FC<SelectUserProps> = ({ onUserChange, selectedUser, sel
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    console.log("Dropdown value selected:", value); // Add this line
     onUserChange(value);
     setIsOptionSelected(true);
   };

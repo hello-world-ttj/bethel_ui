@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createChurch, getChurchById, updateChurch } from "../../api/churchApi";
+import { toast } from "react-toastify";
 
 const AddChurch = () => {
   const [churchData, setChurchData] = useState({
     name: "",
-    image: "https://img.lovepik.com/png/20231114/church-mission-vector-cartoon-churches-sticker_585191_wh1200.png",
+    image:
+      "https://i.pinimg.com/564x/c2/95/d9/c295d9de11d7bd45b42890e34104eb09.jpg",
     address: "",
   });
 
@@ -50,29 +52,30 @@ const AddChurch = () => {
         await createChurch(churchData);
       }
       navigate("/church");
-    } catch (error) {
-      console.error("Failed to save church", error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
-      <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
-            onClick={() =>navigate(-1) } // Replace with your back navigation logic
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
-          </svg> <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
+          onClick={() => navigate(-1)} // Replace with your back navigation logic
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>{" "}
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           {churchId ? "Edit Church" : "Add Church"}
         </h2>
       </div>

@@ -8,6 +8,7 @@ import {
 } from "../../api/subscriptionApi";
 import SelectPlan from "../../components/Forms/SelectGroup/SelectPlan";
 import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
+import { toast } from "react-toastify";
 
 const AddSubscription = () => {
   const location = useLocation();
@@ -67,19 +68,17 @@ const AddSubscription = () => {
         await createSubscription(subData);
       }
       navigate("/subscription");
-    } catch (error) {
-      console.error("Failed to save subscription", error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
   const handleUserChange = (value: string) => {
-    console.log("value");
     setSubData((prev: any) => ({
       ...prev,
       user: value,
     }));
   };
-  console.log(subData.user);
 
   const handlePlanChange = (value: string) => {
     setSubData((prev: any) => ({

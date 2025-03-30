@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createUser, getUserById, updateUser } from "../../api/userApi";
 import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
+import { toast } from "react-toastify";
 
 const AddUser = () => {
   const [userData, setUserData] = useState({
@@ -10,6 +11,7 @@ const AddUser = () => {
     phone: "",
     address: "",
     church: "",
+    pincode: "",
   });
 
   const location = useLocation();
@@ -31,6 +33,7 @@ const AddUser = () => {
             phone: user.phone || "",
             address: user.address || "",
             church: user.church._id || "",
+            pincode: user.pincode || "",
           });
         }
       };
@@ -55,8 +58,8 @@ const AddUser = () => {
         await createUser(userData);
       }
       navigate("/user");
-    } catch (error) {
-      console.error("Failed to save user", error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
   const handleChurchChange = (value: string) => {
@@ -151,7 +154,19 @@ const AddUser = () => {
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
-
+            <div className="mb-4.5">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Pin Code
+              </label>
+              <input
+                type="text"
+                name="pincode"
+                value={userData.pincode}
+                onChange={handleChange}
+                placeholder="Enter your pin code"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+              />
+            </div>
             <button
               type="submit"
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"

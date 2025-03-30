@@ -1,21 +1,23 @@
+import { toast } from "react-toastify";
 import axiosInstance from "./axiosintercepter";
 
 export const createPlan = async (data: any): Promise<any | null> => {
   try {
     const response = await axiosInstance.post(`/plans`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to create plan:", error);
-    return null;
+  } catch (error: any) {
+    throw error.response.data;
   }
 };
-export const getPlan = async (params: { search?: string ;
+export const getPlan = async (params: {
+  search?: string;
   limit?: number;
   page?: number;
 }): Promise<any | null> => {
   try {
-    const response = await axiosInstance.get(`/plans`,{
-      params
+    const response = await axiosInstance.get(`/plans`, {
+      params,
     });
     return response.data;
   } catch (error) {
@@ -38,18 +40,18 @@ export const updatePlan = async (
 ): Promise<any | null> => {
   try {
     const response = await axiosInstance.put(`/plans/${id}`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to update plan:", error);
-    return null;
+  } catch (error: any) {
+    throw error.response.data;
   }
 };
 export const deletePlan = async (id: string): Promise<any | null> => {
   try {
     const response = await axiosInstance.delete(`/plans/${id}`);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to delete plan:", error);
-    return null;
+  } catch (error: any) {
+    throw error.response.data;
   }
 };

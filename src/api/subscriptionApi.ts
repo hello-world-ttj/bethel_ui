@@ -1,12 +1,13 @@
+import { toast } from "react-toastify";
 import axiosInstance from "./axiosintercepter";
 
 export const createSubscription = async (data: any): Promise<any | null> => {
   try {
     const response = await axiosInstance.post(`/subscription`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to create subscription:", error);
-    return null;
+  } catch (error: any) {
+    throw error.response.data;
   }
 };
 export const getSubscription = async (params: {
@@ -40,19 +41,19 @@ export const updateSubscription = async (
 ): Promise<any | null> => {
   try {
     const response = await axiosInstance.put(`/subscription/${id}`, data);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to update subscription:", error);
-    return null;
+  } catch (error : any) {
+    throw error.response.data;
   }
 };
 export const deleteSubscription = async (id: string): Promise<any | null> => {
   try {
     const response = await axiosInstance.delete(`/subscription/${id}`);
+    toast.success(response.data.message);
     return response.data;
-  } catch (error) {
-    console.error("Failed to delete subscription:", error);
-    return null;
+  } catch (error : any) {
+    throw error.response.data;
   }
 };
 export const getPdf = async (): Promise<any | null> => {
