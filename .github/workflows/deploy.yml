@@ -61,7 +61,6 @@ jobs:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USER }}
           key: ${{ secrets.LIGHTSAIL_KEY }}
-          port: 22
           script: |
             # Remove old deployment
             sudo rm -rf /var/www/html/bethel-frontend
