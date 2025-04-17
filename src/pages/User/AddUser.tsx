@@ -32,7 +32,7 @@ const AddUser = () => {
             email: user.email || "",
             phone: user.phone || "",
             address: user.address || "",
-            church: user.church._id || "",
+            church: user.church?._id || "",
             pincode: user.pincode || "",
           });
         }

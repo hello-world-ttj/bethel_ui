@@ -47,7 +47,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
           email: user.email || "",
           phone: user.phone || "",
           address: user.address || "",
-          church: user.church.name || "",
+          church: user.church?.name || "",
           status: user.status || "",
         });
       }
