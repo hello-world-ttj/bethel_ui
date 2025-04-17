@@ -78,7 +78,7 @@ const TableOne: React.FC<TableOneProps> = ({ brandData }) => {
           </div>
         </div>
 
-        {brandData?.map((brand, key) => (
+        {brandData?.length > 0 ? brandData?.map((brand, key) => (
           <div
             className={`grid grid-cols-3 sm:grid-cols-5 ${
               key === brandData.length - 1
@@ -124,7 +124,11 @@ const TableOne: React.FC<TableOneProps> = ({ brandData }) => {
               </p>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="flex items-center justify-center p-2.5 xl:p-5">
+            <p className="text-black dark:text-white">No Subscriptions</p>
+          </div>
+        )}
       </div>
     </div>
   );
