@@ -225,6 +225,10 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               ))
             ) : (
               <tr>
+                <td
+                  colSpan={4}
+                  className="py-10 text-center text-gray-500 dark:text-gray-400"
+                >
                 <div className="flex flex-col items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -251,7 +255,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                   </svg>
                   <p className="text-lg font-medium">No data available</p>
                 
-                </div>
+                </div></td>
               </tr>
             )}
           </tbody>
