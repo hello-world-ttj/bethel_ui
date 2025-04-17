@@ -6,7 +6,6 @@ const Settings = () => {
     <>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Settings" />
-
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
