@@ -33,11 +33,11 @@ const SignIn: React.FC = () => {
   };
   return (
     <>
-      <div className="flex justify-center items-center bg-white h-screen">
+      <div className="flex justify-center items-center bg-white h-screen dark:bg-boxdark">
         <div className="w-full  xl:w-1/2  border border-stroke bg-white dark:border-strokedark dark:bg-boxdark shadow-lg ">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <div className="mb-3.5 flex justify-center">
-              <img className="hidden dark:block" src={Logo} alt="Logo" />
+              <img className="hidden dark:block  w-26 h-28" src={Logo} alt="Logo" />
               <img
                 className="dark:hidden w-26 h-28"
                 src={LogoDark}
@@ -45,7 +45,7 @@ const SignIn: React.FC = () => {
               />
             </div>
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 flex justify-center ">
-              Login to Bethal Patrika
+              Login to Bethel Patrika
             </h2>
 
             <form onSubmit={handleSubmit}>
