@@ -289,7 +289,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
         )}
         {view && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative dark:bg-graydark ">
               <button
                 onClick={handleCloseView}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -302,7 +302,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               <img
                 src={churchData.image}
                 alt={churchData.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
+                className="w-full h-48 object-contain rounded-md mb-4"
               />
               <p className="text-gray-600">{churchData.address}</p>
             </div>

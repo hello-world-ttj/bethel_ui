@@ -317,7 +317,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
         )}
         {view && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100 dark:bg-graydark" >
               <button
                 onClick={handleCloseView}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
