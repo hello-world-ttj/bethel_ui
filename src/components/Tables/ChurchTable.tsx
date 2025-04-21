@@ -38,7 +38,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
       if (church) {
         setChurchData({
           name: church.name || "",
-          image: church.image || "",
+          image: church.image || "https://media.istockphoto.com/id/1473077427/vector/catholic-church-building-isolated-on-white-background-religious-architecture-facade-tall.jpg?s=612x612&w=0&k=20&c=jhk9c1KppGnHiCTigfmBe9prj6G7nKX4HC3k1uw7pRU=",
           address: church.address || "",
         });
       }
@@ -97,9 +97,9 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Name
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              {/* <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Address
-              </th>
+              </th> */}
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Image
               </th>
@@ -129,15 +129,15 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                       </h5>
                     </div>
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
                       {packageItem.address}
                     </p>
-                  </td>
+                  </td> */}
 
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <img
-                      src={packageItem.image}
+                      src={packageItem.image || "https://media.istockphoto.com/id/1473077427/vector/catholic-church-building-isolated-on-white-background-religious-architecture-facade-tall.jpg?s=612x612&w=0&k=20&c=jhk9c1KppGnHiCTigfmBe9prj6G7nKX4HC3k1uw7pRU="}
                       alt="Package"
                       className="w-16 h-16 object-cover rounded"
                     />

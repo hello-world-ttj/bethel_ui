@@ -51,12 +51,12 @@ const SignIn: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Email
+                  Username
                 </label>
                 <div className="relative">
                   <input
-                    type="email"
-                    placeholder="Enter your email"
+                    type="text"
+                    placeholder="Enter your username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -68,16 +68,19 @@ const SignIn: React.FC = () => {
                       className="fill-current"
                       width="22"
                       height="22"
-                      viewBox="0 0 22 22"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g opacity="0.5">
-                        <path
-                          d="M19.2516 3.30005H2.75156C1.58281 3.30005 0.585938 4.26255 0.585938 5.46567V16.6032C0.585938 17.7719 1.54844 18.7688 2.75156 18.7688H19.2516C20.4203 18.7688 21.4172 17.8063 21.4172 16.6032V5.4313C21.4172 4.26255 20.4203 3.30005 19.2516 3.30005ZM19.2516 4.84692C19.2859 4.84692 19.3203 4.84692 19.3547 4.84692L11.0016 10.2094L2.64844 4.84692C2.68281 4.84692 2.71719 4.84692 2.75156 4.84692H19.2516ZM19.2516 17.1532H2.75156C2.40781 17.1532 2.13281 16.8782 2.13281 16.5344V6.35942L10.1766 11.5157C10.4172 11.6875 10.6922 11.7563 10.9672 11.7563C11.2422 11.7563 11.5172 11.6875 11.7578 11.5157L19.8016 6.35942V16.5688C19.8703 16.9125 19.5953 17.1532 19.2516 17.1532Z"
-                          fill=""
-                        />
-                      </g>
+                      <path
+                        opacity="0.5"
+                        d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                        fill=""
+                      />
+                      <path
+                        d="M4 20C4 16.6863 7.13401 14 11 14H13C16.866 14 20 16.6863 20 20V21H4V20Z"
+                        fill=""
+                      />
                     </svg>
                   </span>
                 </div>
