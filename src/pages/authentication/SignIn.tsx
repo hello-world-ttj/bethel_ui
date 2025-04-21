@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LogoDark from "../../images/bethel.png";
 import Logo from "../../images/bethel.png";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -31,6 +31,11 @@ const SignIn: React.FC = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (localStorage.getItem("423455ehlsls")) {
+      navigate("/dashboard");
+    }
+  })
   return (
     <>
       <div className="flex justify-center items-center bg-white h-screen dark:bg-boxdark">

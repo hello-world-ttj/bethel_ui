@@ -15,6 +15,7 @@ import AddSubscription from "./pages/subscription/AddSubscription";
 import SubscriptionList from "./pages/subscription/SubscriptionList";
 import ChurchUserList from "./pages/Church/ChurchUserList";
 import SignIn from "./pages/authentication/SignIn";
+import PrivateRouter from "./layout/PrivateRouter";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,112 +45,112 @@ function App() {
       <Route
         path="/dashboard"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika" />
               <ECommerce />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/user"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || User" />
               <UserList />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/church"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Church" />
               <ChurchList />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/plan"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Plan" />
               <PlanList />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/subscription"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Subscription" />
               <SubscriptionList />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/add-user"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || User" />
               <AddUser />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/add-church"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Church" />
               <AddChurch />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/church/:id"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Church" />
               <ChurchUserList />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
       <Route
         path="/add-plan"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Plan" />
               <AddPlan />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
 
       <Route
         path="/add-subscription"
         element={
-          <>
+          <PrivateRouter>
             <DefaultLayout>
               <PageTitle title="Bethal Patrika || Subscription" />
               <AddSubscription />
             </DefaultLayout>
-          </>
+          </PrivateRouter>
         }
       />
     </Routes>
