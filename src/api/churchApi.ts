@@ -55,3 +55,21 @@ export const deleteChurch = async (id: string): Promise<any | null> => {
     throw error.response.data;
   }
 };
+export const upload = async (file: File): Promise<any | null> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await axiosInstance.post(`/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    const errorMsg =
+      error.response?.data?.message || "An error occurred during file upload";
+    toast.error(errorMsg);
+    return null;
+  }
+};

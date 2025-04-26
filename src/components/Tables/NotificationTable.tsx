@@ -1,24 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
-import { Church } from "../../types/church";
 import { toast } from "react-toastify";
-interface ChurchTableProps {
-  searchValue: string;
-}
+import { Plan } from "../../types/plan";
+import { deletePlan, getPlan, getPlanById } from "../../api/planApi";
 
-const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
-  const [packageData, setPackageData] = useState<Church[]>([]);
+const NotificationTable: React.FC = () => {
+  const [packageData, setPackageData] = useState<Plan[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const baseUrl = `${import.meta.env.VITE_APP_IMAGE_URL}images`;
   const [view, setView] = useState(false);
-  const [churchData, setChurchData] = useState<{
+  const [planData, setPlanData] = useState<{
     name: string;
-    image: string;
-    address: string;
-  }>({ name: "", image: "", address: "" });
+    status: string;
+    price: string;
+    days: string;
+  }>({ name: "", status: "", price: "", days: "" });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,31 +31,29 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   };
   const handleView = async (id: string) => {
     try {
-      const response = await getChurchById(id);
-      const church = response.data;
+      const response = await getPlanById(id);
+      const plan = response.data;
 
-      if (church) {
-        setChurchData({
-          name: church.name || "",
-          image: church.image
-            ? `${baseUrl}/${church.image}`
-            : "No image available",
-          address: church.address || "",
+      if (plan) {
+        setPlanData({
+          name: plan.name || "",
+          status: plan.status || "",
+          price: plan.price || "",
+          days: plan.days || "",
         });
       }
       setView(true);
     } catch (error) {
-      console.error("Failed to fetch church:", error);
+      console.error("Failed to fetch plan:", error);
     }
   };
   const handleCloseView = () => {
     setView(false);
   };
   useEffect(() => {
-    const fetchChurches = async () => {
+    const fetchPlans = async () => {
       try {
-        const response = await getChurch({
-          search: searchValue,
+        const response = await getPlan({
           page: currentPage,
           limit: itemsPerPage,
         });
@@ -66,24 +62,21 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
           setPackageData(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch members:", error);
+        console.error("Failed to fetch plans:", error);
       }
     };
 
-    fetchChurches();
-  }, [isChange, searchValue, currentPage, itemsPerPage]);
+    fetchPlans();
+  }, [isChange, currentPage, itemsPerPage]);
   const handleDelete = async () => {
     try {
-      await deleteChurch(selectedId!);
+      await deletePlan(selectedId!);
       setIsChange((prevState) => !prevState);
-
       handleClose();
     } catch (error: any) {
       toast.error(error.message);
     }
   };
-
-  const navigate = useNavigate();
   const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
 
   const handlePageChange = (page: number) => {
@@ -91,8 +84,14 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
       setCurrentPage(page);
     }
   };
+  const navigate = useNavigate();
   return (
-    <div className="rounded-sm border border-stroke bg-white  px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      <div className="mb-6 flex items-center justify-between">
+        <h4 className="text-xl font-semibold text-black dark:text-white">
+          Notification Logs
+        </h4>
+      </div>
       <div className="max-w-full overflow-x-auto">
         <table className={`w-full table-auto ${open ? "blur-sm" : ""}`}>
           <thead>
@@ -100,17 +99,11 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Name
               </th>
-              {/* <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Address
-              </th> */}
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Image
+                Price
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Active Users
-              </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Inactive Users
+                Days
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -122,45 +115,22 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                    <div
-                      className="font-medium text-blue-600  cursor-pointer  "
-                      onClick={() => {
-                        navigate(`/church/${packageItem._id}`, {
-                          state: {
-                            name: packageItem.name,
-                          },
-                        });
-                      }}
-                    >
-                      {" "}
-                      <h5 className="font-medium text-blue-600  hover:underline  dark:text-blue-300">
-                        {packageItem.name}
-                      </h5>
-                    </div>
+                    <h5 className="font-medium text-black dark:text-white">
+                      {packageItem.name}
+                    </h5>
                   </td>
-                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.address}
+                      {packageItem.price}
                     </p>
-                  </td> */}
+                  </td>
 
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <img
-                      src={
-                        packageItem.image
-                          ? `${baseUrl}/${packageItem.image}`
-                          : "https://media.istockphoto.com/id/1473077427/vector/catholic-church-building-isolated-on-white-background-religious-architecture-facade-tall.jpg?s=612x612&w=0&k=20&c=jhk9c1KppGnHiCTigfmBe9prj6G7nKX4HC3k1uw7pRU="
-                      }
-                      alt="church"
-                      className="w-16 h-16 object-cover rounded"
-                    />
+                    <p className="text-black dark:text-white">
+                      {packageItem.days}
+                    </p>
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white"></p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white"></p>
-                  </td>
+
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
                       <button
@@ -218,7 +188,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                       <button
                         className="hover:text-primary"
                         onClick={() =>
-                          navigate("/add-church", {
+                          navigate("/add-plan", {
                             state: {
                               id: packageItem._id,
                               editMode: true,
@@ -244,7 +214,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
             ) : (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={6}
                   className="py-10 text-center text-gray-500 dark:text-gray-400"
                 >
                   <div className="flex flex-col items-center justify-center">
@@ -279,14 +249,14 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
           </tbody>
         </table>
         {open && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 ">
             <div className="bg-white rounded-lg shadow-lg w-96 p-6 dark:bg-graydark">
               <h2 className="text-xl font-semibold text-gray-800">
                 Confirm Deletion
               </h2>
               <p className="mt-4 text-gray-600">
-                Are you sure you want to delete this church? This action cannot
-                be undone.
+                Are you sure you want to delete this Plan? This action cannot be
+                undone.
               </p>
               <div className="mt-6 flex justify-end space-x-4">
                 <button
@@ -307,22 +277,24 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
         )}
         {view && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative dark:bg-graydark ">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative dark:bg-graydark">
               <button
                 onClick={handleCloseView}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                aria-label="Close"
               >
                 ✖
               </button>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                {churchData.name}
+                {planData.name}
               </h2>
-              <img
-                src={churchData.image}
-                alt={churchData.name}
-                className="w-full h-48 object-contain rounded-md mb-4"
-              />
-              <p className="text-gray-600">{churchData.address}</p>
+              <div className="text-gray-600 mb-2">
+                <strong>Price:</strong>{" "}
+                {planData.price ? `${planData.price}` : "N/A"}
+              </div>
+              <div className="text-gray-600">
+                <strong>Days:</strong> {planData.days}
+              </div>
             </div>
           </div>
         )}
@@ -408,4 +380,4 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   );
 };
 
-export default ChurchTable;
+export default NotificationTable;

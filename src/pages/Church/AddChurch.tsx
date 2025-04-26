@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createChurch, getChurchById, updateChurch } from "../../api/churchApi";
+import { createChurch, getChurchById, updateChurch, upload } from "../../api/churchApi";
 import { toast } from "react-toastify";
 
 const AddChurch = () => {
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [churchData, setChurchData] = useState({
     name: "",
-    image:
-      "https://i.pinimg.com/564x/c2/95/d9/c295d9de11d7bd45b42890e34104eb09.jpg",
+    image: "",
     address: "",
   });
-
+  const baseUrl = `${import.meta.env.VITE_APP_IMAGE_URL}images`;
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = location;
@@ -29,6 +30,7 @@ const AddChurch = () => {
             image: church.image || "",
             address: church.address || "",
           });
+          setPreview(church.image? `${baseUrl}/${church.image}` : null);
         }
       };
       fetchChurch();
@@ -37,19 +39,41 @@ const AddChurch = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setChurchData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target as HTMLInputElement;
+
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setPreview(imageUrl);
+
+      setFile(selectedFile);
+    } else {
+      setChurchData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let imageUrl = churchData.image;
+
+      if (preview && file) {
+        const response = await upload(file);
+        if (response?.data) {
+          imageUrl = response.data;
+        }
+      }
+      const churchDataWithImage = {
+        ...churchData,
+        image: imageUrl,
+      };
       if (isEditMode && churchId) {
-        await updateChurch(churchId, churchData);
+        await updateChurch(churchId, churchDataWithImage);
       } else {
-        await createChurch(churchData);
+        await createChurch(churchDataWithImage);
       }
       navigate("/church");
     } catch (error: any) {
@@ -111,7 +135,26 @@ const AddChurch = () => {
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
-
+            <div className="mb-6">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Image
+              </label>
+              <input
+                type="file"
+                name="file"
+                accept="image/*"
+                onChange={handleChange}
+              />
+              {preview && (
+                <div className="mt-3">
+                  <img
+                    src={preview}
+                    alt="Selected Preview"
+                    className="w-32 h-32 object-cover"
+                  />
+                </div>
+              )}
+            </div>
             <button
               type="submit"
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"

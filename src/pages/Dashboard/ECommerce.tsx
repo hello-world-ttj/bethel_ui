@@ -3,6 +3,9 @@ import CardDataStats from "../../components/CardDataStats";
 import TableOne from "../../components/Tables/TableOne";
 import { getDashboard } from "../../api/dashboardApi";
 import { subscription } from "../../types/subscription";
+import ChartOne from "../../components/Charts/ChartOne";
+import ChartTwo from "../../components/Charts/ChartTwo";
+import MonthlySalesChart from "../../components/Charts/MonthlySalesChart";
 
 const ECommerce: React.FC = () => {
   const [dashboard, setDashboard] = useState<{
@@ -57,7 +60,6 @@ const ECommerce: React.FC = () => {
             />
           </svg>{" "}
         </CardDataStats>{" "}
-      
         {/* <CardDataStats
           title="SMS Balance"
           total={`$${dashboard?.twilioBalance}`}
@@ -135,7 +137,9 @@ const ECommerce: React.FC = () => {
           </svg>
         </CardDataStats>
       </div>
-
+      <div className="mt-4  gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+        <MonthlySalesChart />
+      </div>
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="col-span-12 xl:col-span-12">
           <TableOne brandData={dashboard?.subsList} />

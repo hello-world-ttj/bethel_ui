@@ -6,6 +6,7 @@ declare global {
     readonly VITE_APP_AWS_API_URL: string;
     readonly VITE_API_KEY: string;
     readonly VITE_AUTH_TOKEN: string;
+    readonly VITE_APP_IMAGE_URL: string;
   }
 
   interface ImportMeta {

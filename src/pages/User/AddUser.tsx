@@ -11,6 +11,7 @@ const AddUser = () => {
     phone: "",
     address: "",
     church: "",
+    regNo: "",
     pincode: "",
   });
 
@@ -34,6 +35,7 @@ const AddUser = () => {
             address: user.address || "",
             church: user.church?._id || "",
             pincode: user.pincode || "",
+            regNo: user.regNo || "",
           });
         }
       };
@@ -104,7 +106,20 @@ const AddUser = () => {
                   name="name"
                   value={userData.name}
                   onChange={handleChange}
-                  placeholder="Enter your name"
+                  placeholder="Enter name"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                />
+              </div>
+              <div className="w-full">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Register No
+                </label>
+                <input
+                  type="text"
+                  name="regNo"
+                  value={userData.regNo}
+                  onChange={handleChange}
+                  placeholder="Enter  register number"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
                 />
               </div>
@@ -118,7 +133,7 @@ const AddUser = () => {
                 name="email"
                 value={userData.email}
                 onChange={handleChange}
-                placeholder="Enter your email address"
+                placeholder="Enter email address"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
@@ -131,7 +146,7 @@ const AddUser = () => {
                 name="phone"
                 value={userData.phone}
                 onChange={handleChange}
-                placeholder="Enter your phone number"
+                placeholder="Enter phone number"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>
@@ -150,7 +165,7 @@ const AddUser = () => {
                 name="address"
                 value={userData.address}
                 onChange={handleChange}
-                placeholder="Enter your address"
+                placeholder="Enter address"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
@@ -163,7 +178,7 @@ const AddUser = () => {
                 name="pincode"
                 value={userData.pincode}
                 onChange={handleChange}
-                placeholder="Enter your pin code"
+                placeholder="Enter pin code"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               />
             </div>

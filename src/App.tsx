@@ -16,6 +16,7 @@ import SubscriptionList from "./pages/subscription/SubscriptionList";
 import ChurchUserList from "./pages/Church/ChurchUserList";
 import SignIn from "./pages/authentication/SignIn";
 import PrivateRouter from "./layout/PrivateRouter";
+import NotificationPage from "./pages/notification/NotificationPage";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,7 +38,7 @@ function App() {
         index
         element={
           <>
-            <PageTitle title="Bethal Patrika" />
+            <PageTitle title="Bethel Patrika" />
             <SignIn />
           </>
         }
@@ -47,7 +48,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika" />
+              <PageTitle title="Bethel Patrika" />
               <ECommerce />
             </DefaultLayout>
           </PrivateRouter>
@@ -58,7 +59,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || User" />
+              <PageTitle title="Bethel Patrika || User" />
               <UserList />
             </DefaultLayout>
           </PrivateRouter>
@@ -69,7 +70,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Church" />
+              <PageTitle title="Bethel Patrika || Church" />
               <ChurchList />
             </DefaultLayout>
           </PrivateRouter>
@@ -80,8 +81,19 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Plan" />
+              <PageTitle title="Bethel Patrika || Plan" />
               <PlanList />
+            </DefaultLayout>
+          </PrivateRouter>
+        }
+      />
+        <Route
+        path="/notifications"
+        element={
+          <PrivateRouter>
+            <DefaultLayout>
+              <PageTitle title="Bethel Patrika || Plan" />
+              <NotificationPage/>
             </DefaultLayout>
           </PrivateRouter>
         }
@@ -91,7 +103,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Subscription" />
+              <PageTitle title="Bethel Patrika || Subscription" />
               <SubscriptionList />
             </DefaultLayout>
           </PrivateRouter>
@@ -102,7 +114,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || User" />
+              <PageTitle title="Bethel Patrika || User" />
               <AddUser />
             </DefaultLayout>
           </PrivateRouter>
@@ -113,7 +125,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Church" />
+              <PageTitle title="Bethel Patrika || Church" />
               <AddChurch />
             </DefaultLayout>
           </PrivateRouter>
@@ -124,7 +136,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Church" />
+              <PageTitle title="Bethel Patrika || Church" />
               <ChurchUserList />
             </DefaultLayout>
           </PrivateRouter>
@@ -135,7 +147,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Plan" />
+              <PageTitle title="Bethel Patrika || Plan" />
               <AddPlan />
             </DefaultLayout>
           </PrivateRouter>
@@ -147,7 +159,7 @@ function App() {
         element={
           <PrivateRouter>
             <DefaultLayout>
-              <PageTitle title="Bethal Patrika || Subscription" />
+              <PageTitle title="Bethel Patrika || Subscription" />
               <AddSubscription />
             </DefaultLayout>
           </PrivateRouter>

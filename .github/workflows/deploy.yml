@@ -25,6 +25,7 @@ jobs:
         env: # Inject environment variables from GitHub Secrets
           VITE_APP_AWS_API_URL: ${{ secrets.VITE_APP_AWS_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_APP_IMAGE_URL: ${{ secrets.VITE_APP_IMAGE_URL }}
         run: |
           npm ci
           npm run build
