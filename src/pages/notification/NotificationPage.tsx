@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import NotificationTable from "../../components/Tables/NotificationTable";
 import SelectMultiUser from "../../components/Forms/SelectGroup/SelectMultiUser";
+
+import { createNotification } from "../../api/notificationApi";
 import { toast } from "react-toastify";
 
 const NotificationPage = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const[loading, setLoading] = useState<boolean>(false);
+  const [isChange, setIsChange] = useState<boolean>(false);
   const [emailData, setEmailData] = useState({
     content: "",
     subject: "",
@@ -27,7 +31,22 @@ const NotificationPage = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(emailData);
+    setLoading(true);
+    try {
+      await createNotification(emailData);
+      setSelectedUsers([]);
+      setEmailData({
+        content: "",
+        subject: "",
+        users: [],
+      });
+      setIsChange(prev => !prev);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+    finally {
+      setLoading(false);
+    }
   };
   return (
     <>
@@ -80,12 +99,12 @@ const NotificationPage = () => {
               type="submit"
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"
             >
-              Submit
+              {loading ? "Sending..." : "Send"}
             </button>
           </div>
         </form>
       </div>
-      <NotificationTable />
+      <NotificationTable  isChange={isChange}/>
     </>
   );
 };

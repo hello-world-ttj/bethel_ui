@@ -15,6 +15,7 @@ export const getMember = async (params: {
   status?: string;
   limit?: number;
   page?: number;
+  user?: string;
 }): Promise<any | null> => {
   try {
     const response = await axiosInstance.get(`/users`, {
