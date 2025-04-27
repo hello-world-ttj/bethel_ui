@@ -3,15 +3,20 @@ import { Notification } from "../../types/notification";
 import { getNotification } from "../../api/notificationApi";
 import { useRefetch } from "../../context/RefetchContext";
 import moment from "moment";
+
 interface NotificationTableProps {
   isChange: boolean;
 }
+
 const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
   const [packageData, setPackageData] = useState<Notification[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { refetchTrigger } = useRefetch();
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [expandedContents, setExpandedContents] = useState<Record<number, boolean>>({});
+  const maxLength = 30;
+  
   const fetchNotifications = async () => {
     try {
       const response = await getNotification({
@@ -26,6 +31,7 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
       console.error("Failed to fetch notifications:", error);
     }
   };
+  
   useEffect(() => {
     fetchNotifications();
   }, [currentPage, itemsPerPage, isChange, refetchTrigger]);
@@ -37,6 +43,18 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
       setCurrentPage(page);
     }
   };
+  
+  const toggleExpand = (index: number) => {
+    setExpandedContents(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+  
+  const isContentTruncated = (content: string) => {
+    return content.length > maxLength;
+  };
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="mb-6 flex items-center justify-between">
@@ -48,7 +66,7 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
         <table className={`w-full table-auto `}>
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Type
               </th>
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
@@ -67,8 +85,8 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
           </thead>
           <tbody>
             {packageData.length > 0 ? (
-              packageData.map((packageItem, key) => (
-                <tr key={key}>
+              packageData.map((packageItem, index) => (
+                <tr key={index}>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark capitalize">
                     <p className="text-black dark:text-white ">
                       {packageItem.type}
@@ -87,9 +105,19 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
                     </p>
                   </td>
 
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark max-w-xs">
                     <p className="text-black dark:text-white">
-                      {packageItem.content}
+                      {isContentTruncated(packageItem.content) && !expandedContents[index]
+                        ? `${packageItem.content.substring(0, maxLength)}...`
+                        : packageItem.content}
+                      {isContentTruncated(packageItem.content) && (
+                        <button 
+                          onClick={() => toggleExpand(index)}
+                          className="text-blue-500 hover:text-blue-700 ml-1 text-sm font-medium"
+                        >
+                          {expandedContents[index] ? "Show less" : "Show more"}
+                        </button>
+                      )}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
