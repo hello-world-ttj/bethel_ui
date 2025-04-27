@@ -1,7 +1,7 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-export default function MonthlySalesChart() {
+export default function MonthlySalesChart({ data }: any) {
   const options: ApexOptions = {
     colors: ["#f09443"],
     chart: {
@@ -83,8 +83,8 @@ export default function MonthlySalesChart() {
   };
   const series = [
     {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      name: "Subscription",
+      data: data
     },
   ];
 

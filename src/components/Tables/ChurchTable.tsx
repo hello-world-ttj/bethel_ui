@@ -156,10 +156,14 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
                     />
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white"></p>
+                    <p className="text-black dark:text-white">
+                      {packageItem.activeUser}
+                    </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white"></p>
+                    <p className="text-black dark:text-white">
+                      {packageItem.inActiveUser}
+                    </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">

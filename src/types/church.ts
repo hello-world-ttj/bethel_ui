@@ -3,4 +3,6 @@ export type Church = {
   name: string;
   image: string;
   address: string;
+  inActiveUser: number;
+  activeUser: number;
 };

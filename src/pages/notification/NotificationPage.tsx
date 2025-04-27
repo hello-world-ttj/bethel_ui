@@ -4,16 +4,21 @@ import SelectMultiUser from "../../components/Forms/SelectGroup/SelectMultiUser"
 
 import { createNotification } from "../../api/notificationApi";
 import { toast } from "react-toastify";
+import { upload } from "../../api/churchApi";
 
 const NotificationPage = () => {
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const[loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [emailData, setEmailData] = useState({
     content: "",
     subject: "",
     users: [] as string[],
+    media: "",
   });
+  const baseUrl = `${import.meta.env.VITE_APP_IMAGE_URL}images`;
   useEffect(() => {
     setEmailData((prev) => ({
       ...prev,
@@ -23,28 +28,51 @@ const NotificationPage = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setEmailData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target as HTMLInputElement;
+
+    if (files && files.length > 0) {
+      const selectedFile = files[0];
+
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setPreview(imageUrl);
+
+      setFile(selectedFile);
+    } else {
+      setEmailData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await createNotification(emailData);
+      let imageUrl = emailData.media;
+
+      if (preview && file) {
+        const response = await upload(file);
+        if (response?.data) {
+          imageUrl = response.data;
+        }
+      }
+      const emailDataWithImage = {
+        ...emailData,
+        media: `${baseUrl}/${imageUrl}`,
+      };
+      await createNotification(emailDataWithImage);
       setSelectedUsers([]);
       setEmailData({
         content: "",
         subject: "",
         users: [],
+        media: "",
       });
-      setIsChange(prev => !prev);
+      setPreview(null);
+      setIsChange((prev) => !prev);
     } catch (error: any) {
       toast.error(error.message);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -95,6 +123,26 @@ const NotificationPage = () => {
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
+            <div className="mb-6">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Media
+              </label>
+              <input
+                type="file"
+                name="file"
+                accept="image/*"
+                onChange={handleChange}
+              />
+              {preview && (
+                <div className="mt-3">
+                  <img
+                    src={preview}
+                    alt="Selected Preview"
+                    className="w-32 h-32 object-cover"
+                  />
+                </div>
+              )}
+            </div>
             <button
               type="submit"
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"
@@ -104,7 +152,7 @@ const NotificationPage = () => {
           </div>
         </form>
       </div>
-      <NotificationTable  isChange={isChange}/>
+      <NotificationTable isChange={isChange} />
     </>
   );
 };

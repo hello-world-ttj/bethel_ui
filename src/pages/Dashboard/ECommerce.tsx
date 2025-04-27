@@ -3,8 +3,6 @@ import CardDataStats from "../../components/CardDataStats";
 import TableOne from "../../components/Tables/TableOne";
 import { getDashboard } from "../../api/dashboardApi";
 import { subscription } from "../../types/subscription";
-import ChartOne from "../../components/Charts/ChartOne";
-import ChartTwo from "../../components/Charts/ChartTwo";
 import MonthlySalesChart from "../../components/Charts/MonthlySalesChart";
 
 const ECommerce: React.FC = () => {
@@ -15,6 +13,7 @@ const ECommerce: React.FC = () => {
     churches: string;
     plans: string;
     subsList: subscription[];
+    monthlyPlanPrices: string[];
   }>({
     activeUsers: "0",
     twilioBalance: "0",
@@ -22,6 +21,7 @@ const ECommerce: React.FC = () => {
     churches: "0",
     plans: "0",
     subsList: [],
+    monthlyPlanPrices: [],
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -138,7 +138,7 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
       </div>
       <div className="mt-4  gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <MonthlySalesChart />
+        <MonthlySalesChart data={dashboard?.monthlyPlanPrices} />
       </div>
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="col-span-12 xl:col-span-12">

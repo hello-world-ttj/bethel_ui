@@ -1,6 +1,7 @@
 import { Church } from "./church";
 
 export type User = {
+  salutation: string;
   _id: string;
   name: string;
   church: Church;

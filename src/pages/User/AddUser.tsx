@@ -3,9 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createUser, getUserById, updateUser } from "../../api/userApi";
 import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
 import { toast } from "react-toastify";
+import SelectSalutation from "../../components/Forms/SelectGroup/SelectSalutation";
 
 const AddUser = () => {
   const [userData, setUserData] = useState({
+    salutation: "",
     name: "",
     email: "",
     phone: "",
@@ -13,6 +15,7 @@ const AddUser = () => {
     church: "",
     regNo: "",
     pincode: "",
+    nativePlace: "",
   });
 
   const location = useLocation();
@@ -29,6 +32,7 @@ const AddUser = () => {
 
         if (user) {
           setUserData({
+            salutation: user.salutation || "",
             name: user.name || "",
             email: user.email || "",
             phone: user.phone || "",
@@ -36,6 +40,7 @@ const AddUser = () => {
             church: user.church?._id || "",
             pincode: user.pincode || "",
             regNo: user.regNo || "",
+            nativePlace: user.nativePlace || "",
           });
         }
       };
@@ -70,6 +75,12 @@ const AddUser = () => {
       church: value,
     }));
   };
+  const handleSalutationChange = (value: string) => {
+    setUserData((prev) => ({
+      ...prev,
+      salutation: value,
+    }));
+  };
 
   return (
     <div className="flex flex-col gap-9">
@@ -97,6 +108,10 @@ const AddUser = () => {
         <form onSubmit={handleSubmit}>
           <div className="p-6.5">
             <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+            <div className="w-full"><SelectSalutation
+                selectedSalutation={userData.salutation}
+                onSalutationChange={handleSalutationChange}
+                /></div>
               <div className="w-full">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Name
@@ -169,6 +184,19 @@ const AddUser = () => {
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
               ></textarea>
             </div>
+            <div className="mb-6">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Native Place
+                </label>
+                <input
+                  type="text"
+                  name="nativePlace"
+                  value={userData.nativePlace}
+                  onChange={handleChange}
+                  placeholder="Enter native place"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                />
+              </div>
             <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
                 Pin Code

@@ -20,6 +20,9 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     address: "",
     church: "",
     status: "",
+    nativePlace: "",
+    salutation: "",
+    pincode: "",
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -49,6 +52,9 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
           address: user.address || "",
           church: user.church?.name || "",
           status: user.status || "",
+          nativePlace: user.nativePlace || "",
+          salutation: user.salutation || "",
+          pincode: user.pincode || "",
         });
       }
       setView(true);
@@ -130,7 +136,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">
-                      {packageItem.name}
+                     {packageItem.salutation? packageItem.salutation + "." : ""} {packageItem.name}
                     </h5>
                     {/* <p className="text-sm">{packageItem.name}</p> */}
                   </td>
@@ -316,60 +322,111 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
           </div>
         )}
         {view && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative transform transition-transform duration-300 scale-100 dark:bg-graydark" >
-              <button
-                onClick={handleCloseView}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
-                aria-label="Close"
-              >
-                ✖
-              </button>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                  User Details
-                </h2>
-                <div className="space-y-3">
-                  <div>
-                    <strong className="text-gray-700">Name:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.name || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-700">Email:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.email || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-700">Phone:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.phone || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-700">Address:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.address || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-700">Church:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.church || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-700">Status:</strong>{" "}
-                    <span className="text-gray-600">
-                      {userData.status || "N/A"}
-                    </span>
-                  </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
+    <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl transform transition-transform duration-300 scale-100 dark:bg-boxdark">
+    
+      <div className="border-b border-stroke px-6 py-4 dark:border-strokedark flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-black dark:text-white">
+          User Details
+        </h2>
+        <button
+          onClick={handleCloseView}
+          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white focus:outline-none"
+          aria-label="Close"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      
+      <div className="p-6">
+        <div className="flex flex-wrap">
+          <div className="w-full md:w-1/4 flex justify-center mb-6 md:mb-0">
+            <div className="h-24 w-24 rounded-full bg-[#f09443] bg-opacity-20 flex items-center justify-center">
+              <span className="text-[#f09443] text-3xl font-bold">
+                {userData.name ? userData.name.charAt(0).toUpperCase() : "U"}
+              </span>
+            </div>
+          </div>
+          
+          <div className="w-full md:w-3/4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 pr-4">
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Name</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.salutation && `${userData.salutation}. `}{userData.name || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Email</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.email || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Phone</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.phone || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Address</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.address || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Native Place</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.nativePlace || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Pincode</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.pincode || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Church</div>
+                <div className="w-2/3 font-medium text-black dark:text-white">
+                  {userData.church || "N/A"}
+                </div>
+              </div>
+              
+              <div className="flex">
+                <div className="w-1/3 text-gray-500 dark:text-gray-400">Status</div>
+                <div className="w-2/3">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    userData.status === 'Active' 
+                      ? 'bg-success bg-opacity-10 text-success' 
+                      : 'bg-danger bg-opacity-10 text-danger'
+                  }`}>
+                    {userData.status || "N/A"}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="border-t border-stroke px-6 py-3 dark:border-strokedark flex justify-end">
+        <button
+          onClick={handleCloseView}
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 transition-colors dark:bg-meta-4 dark:text-white dark:hover:bg-opacity-80"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
         )}
       </div>
       <div

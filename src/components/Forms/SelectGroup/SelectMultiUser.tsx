@@ -8,14 +8,22 @@ interface SelectGroupOneProps {
   selectedUsers: string[];
 }
 
-const SelectMultiUser: React.FC<SelectGroupOneProps> = ({ onUserChange, selectedUsers = [] }) => {
-  const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<{ label: string; value: string }[]>([]);
+const SelectMultiUser: React.FC<SelectGroupOneProps> = ({
+  onUserChange,
+  selectedUsers = [],
+}) => {
+  const [options, setOptions] = useState<{ label: string; value: string }[]>(
+    []
+  );
+  const [selectedOptions, setSelectedOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await getMember({
         user: "all",
+        status: "inactive",
       });
       const userOptions = response.data.map((user: User) => ({
         label: user.name,
@@ -27,7 +35,9 @@ const SelectMultiUser: React.FC<SelectGroupOneProps> = ({ onUserChange, selected
   }, []);
 
   useEffect(() => {
-    const selected = options.filter((option) => selectedUsers.includes(option.value));
+    const selected = options.filter((option) =>
+      selectedUsers.includes(option.value)
+    );
     setSelectedOptions(selected);
   }, [selectedUsers, options]);
 
@@ -56,9 +66,49 @@ const SelectMultiUser: React.FC<SelectGroupOneProps> = ({ onUserChange, selected
             minHeight: "48px",
             backgroundColor: "transparent",
           }),
-          menu: (provided) => ({
+          menu: (provided, state) => ({
             ...provided,
             zIndex: 50,
+            backgroundColor: document.body.classList.contains("dark")
+              ? "#1e293b"
+              : provided.backgroundColor,
+          }),
+          option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused
+              ? document.body.classList.contains("dark")
+                ? "#334155"
+                : provided.backgroundColor
+              : document.body.classList.contains("dark")
+              ? "#1e293b"
+              : provided.backgroundColor,
+            color: document.body.classList.contains("dark")
+              ? "#fff"
+              : provided.color,
+          }),
+          multiValue: (provided) => ({
+            ...provided,
+            backgroundColor: document.body.classList.contains("dark")
+              ? "#334155"
+              : provided.backgroundColor,
+          }),
+          multiValueLabel: (provided) => ({
+            ...provided,
+            color: document.body.classList.contains("dark")
+              ? "#fff"
+              : provided.color,
+          }),
+          input: (provided) => ({
+            ...provided,
+            color: document.body.classList.contains("dark")
+              ? "#fff"
+              : provided.color,
+          }),
+          singleValue: (provided) => ({
+            ...provided,
+            color: document.body.classList.contains("dark")
+              ? "#fff"
+              : provided.color,
           }),
         }}
       />

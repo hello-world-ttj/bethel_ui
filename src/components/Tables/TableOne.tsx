@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 import { subscription } from "../../types/subscription";
 import { getPdf } from "../../api/subscriptionApi";
+import { toast } from "react-toastify";
 
 type TableOneProps = {
   brandData: subscription[];
@@ -17,7 +18,7 @@ const TableOne: React.FC<TableOneProps> = ({ brandData }) => {
         console.log("PDF URL is not available");
       }
     } catch (error) {
-      console.error("Error fetching the PDF:", error);
+      toast.error("No data found");
     }
   };
 
