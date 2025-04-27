@@ -12,7 +12,6 @@ const ChurchUserList = () => {
     <>
       <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-7.5 justify-between">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
-          {/* Back button SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -20,7 +19,7 @@ const ChurchUserList = () => {
             strokeWidth={1.5}
             stroke="currentColor"
             className="w-6 h-6 cursor-pointer text-black dark:text-white hover:text-blue-600"
-            onClick={() =>navigate(-1) } // Replace with your back navigation logic
+            onClick={() => navigate(-1)}
           >
             <path
               strokeLinecap="round"
@@ -65,7 +64,7 @@ const ChurchUserList = () => {
               placeholder="Type to search..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full bg-white pl-10 pr-4 py-2.5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full bg-white  dark:bg-graydark dark:text-white pl-10 pr-4 py-2.5 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-primary "
             />
           </div>
         </div>

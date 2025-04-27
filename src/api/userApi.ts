@@ -6,7 +6,7 @@ export const createUser = async (data: any): Promise<any | null> => {
     const response = await axiosInstance.post(`/users`, data);
     toast.success(response.data.message);
     return response.data;
-  } catch (error : any) {
+  } catch (error: any) {
     throw error.response.data;
   }
 };
@@ -33,7 +33,7 @@ export const getMemberChurch = async (
     search?: string;
     limit?: number;
     page?: number;
-    church?: string;  
+    church?: string;
   }
 ): Promise<any | null> => {
   try {
@@ -64,7 +64,7 @@ export const updateUser = async (
     const response = await axiosInstance.put(`/users/${id}`, data);
     toast.success(response.data.message);
     return response.data;
-  } catch (error : any) {
+  } catch (error: any) {
     throw error.response.data;
   }
 };
@@ -73,7 +73,16 @@ export const deleteUser = async (id: string): Promise<any | null> => {
     const response = await axiosInstance.delete(`/users/${id}`);
     toast.success(response.data.message);
     return response.data;
-  } catch (error : any) {
+  } catch (error: any) {
+    throw error.response.data;
+  }
+};
+
+export const clearCache = async (): Promise<any | null> => {
+  try {
+    const response = await axiosInstance.post(`/users/clear-cache`);
+    return response.data;
+  } catch (error: any) {
     throw error.response.data;
   }
 };

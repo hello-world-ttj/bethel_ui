@@ -8,6 +8,7 @@ import {
   getSubscriptionById,
 } from "../../api/subscriptionApi";
 import moment from "moment-timezone";
+import { useRefetch } from "../../context/RefetchContext";
 interface SubscriptionTableProps {
   searchValue: string;
   tab: string;
@@ -19,6 +20,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   const [packageData, setPackageData] = useState<subscription[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
+  const { refetchTrigger } = useRefetch();
   const [view, setView] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<{
     user: string;
@@ -62,26 +64,25 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   const handleCloseView = () => {
     setView(false);
   };
-  useEffect(() => {
-    const fetchSubscriptions = async () => {
-      try {
-        const response = await getSubscription({
-          search: searchValue,
-          ...(tab !== "all" && { status: tab }),
-          page: currentPage,
-          limit: itemsPerPage,
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch subscriptions:", error);
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await getSubscription({
+        search: searchValue,
+        ...(tab !== "all" && { status: tab }),
+        page: currentPage,
+        limit: itemsPerPage,
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch subscriptions:", error);
+    }
+  };
+  useEffect(() => {
     fetchSubscriptions();
-  }, [isChange, searchValue, tab, currentPage, itemsPerPage]);
+  }, [isChange, searchValue, tab, currentPage, itemsPerPage, refetchTrigger]);
   const handleDelete = async () => {
     try {
       await deleteSubscription(selectedId!);
@@ -247,8 +248,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
                       <button
                         className="hover:text-green-500"
                         onClick={() => {
-                          const phoneNumber =
-                            packageItem.user.phone;
+                          const phoneNumber = packageItem.user.phone;
 
                           window.open(
                             `https://wa.me/${phoneNumber}?text=Hello `,

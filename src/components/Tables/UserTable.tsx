@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getMember, deleteUser, getUserById } from "../../api/userApi";
 import { User } from "../../types/user";
 import { toast } from "react-toastify";
+import { useRefetch } from "../../context/RefetchContext";
 interface UserTableProps {
   searchValue: string;
   tab: string;
@@ -25,7 +26,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     pincode: "",
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
+  const { refetchTrigger } = useRefetch();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -65,26 +66,26 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const handleCloseView = () => {
     setView(false);
   };
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const response = await getMember({
-          search: searchValue,
-          page: currentPage,
-          limit: itemsPerPage,
-          ...(tab !== "all" && { status: tab }),
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch members:", error);
+  const fetchMembers = async () => {
+    try {
+      const response = await getMember({
+        search: searchValue,
+        page: currentPage,
+        limit: itemsPerPage,
+        ...(tab !== "all" && { status: tab }),
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
+      toast.error("Failed to load data. Please try again.");
+    }
+  };
+  useEffect(() => {
     fetchMembers();
-  }, [isChange, searchValue, tab, currentPage, itemsPerPage]);
+  }, [isChange, searchValue, tab, currentPage, itemsPerPage, refetchTrigger]);
   const handleDelete = async () => {
     try {
       await deleteUser(selectedId!);
@@ -95,7 +96,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
       toast.error(error.message);
     }
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {

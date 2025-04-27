@@ -4,9 +4,7 @@ import { useState } from "react";
 
 const UserList = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [activeTab, setActiveTab] = useState("all"); // Track the active tab
-
-  // Function to handle tab click
+  const [activeTab, setActiveTab] = useState("all");
   const handleTabChange = (a: string) => {
     setActiveTab(a as any);
   };
@@ -53,6 +51,7 @@ const UserList = () => {
               onChange={(e) => setSearchValue(e.target.value)}
               className="w-full bg-white pl-10 pr-4 py-2.5 dark:bg-graydark dark:text-white text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            
           </div>
         </div>
 

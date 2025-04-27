@@ -1,35 +1,35 @@
 import { useEffect, useState } from "react";
 import { Notification } from "../../types/notification";
 import { getNotification } from "../../api/notificationApi";
+import { useRefetch } from "../../context/RefetchContext";
 interface NotificationTableProps {
-    isChange: boolean;
-  }
-  const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
+  isChange: boolean;
+}
+const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
   const [packageData, setPackageData] = useState<Notification[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const { refetchTrigger } = useRefetch();
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
-
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await getNotification({
-          page: currentPage,
-          limit: itemsPerPage,
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch notifications:", error);
+  const fetchNotifications = async () => {
+    try {
+      const response = await getNotification({
+        page: currentPage,
+        limit: itemsPerPage,
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+  useEffect(() => {
     fetchNotifications();
-  }, [currentPage, itemsPerPage, isChange]);
+  }, [currentPage, itemsPerPage, isChange, refetchTrigger]);
 
-  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {

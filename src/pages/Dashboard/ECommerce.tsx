@@ -4,8 +4,11 @@ import TableOne from "../../components/Tables/TableOne";
 import { getDashboard } from "../../api/dashboardApi";
 import { subscription } from "../../types/subscription";
 import MonthlySalesChart from "../../components/Charts/MonthlySalesChart";
+import { useRefetch } from "../../context/RefetchContext";
 
 const ECommerce: React.FC = () => {
+  const { refetchTrigger } = useRefetch();
+
   const [dashboard, setDashboard] = useState<{
     activeUsers: string;
     twilioBalance: string;
@@ -23,21 +26,21 @@ const ECommerce: React.FC = () => {
     subsList: [],
     monthlyPlanPrices: [],
   });
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getDashboard();
+  const fetchData = async () => {
+    try {
+      const response = await getDashboard();
 
-        if (response?.data) {
-          setDashboard(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch members:", error);
+      if (response?.data) {
+        setDashboard(response.data);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [refetchTrigger]);
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">

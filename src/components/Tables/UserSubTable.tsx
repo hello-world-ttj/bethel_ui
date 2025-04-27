@@ -7,6 +7,7 @@ import {
   getMemberChurch,
 } from "../../api/userApi";
 import { User } from "../../types/user";
+import { useRefetch } from "../../context/RefetchContext";
 interface UserTableProps {
   searchValue: string;
 }
@@ -14,6 +15,7 @@ interface UserTableProps {
 const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<User[]>([]);
   const { id } = useParams();
+  const { refetchTrigger } = useRefetch();
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
@@ -61,26 +63,25 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   const handleCloseView = () => {
     setView(false);
   };
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const response = await getMemberChurch(id || "", {
-          search: searchValue,
-          page: currentPage,
-          limit: itemsPerPage,
-          church: "all",
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch members:", error);
+  const fetchMembers = async () => {
+    try {
+      const response = await getMemberChurch(id || "", {
+        search: searchValue,
+        page: currentPage,
+        limit: itemsPerPage,
+        church: "all",
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
+    }
+  };
+  useEffect(() => {
     if (id) fetchMembers();
-  }, [id, isChange, searchValue, currentPage, itemsPerPage]);
+  }, [id, isChange, searchValue, currentPage, itemsPerPage, refetchTrigger]);
 
   const handleDelete = async () => {
     try {
@@ -95,7 +96,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   };
 
   const navigate = useNavigate();
-  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
@@ -254,7 +255,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
                   className="border-b border-[#eee] py-5 px-4 dark:border-strokedark text-center"
                   colSpan={10}
                 >
-                 <div className="flex flex-col items-center justify-center">
+                  <div className="flex flex-col items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="48"
@@ -279,7 +280,6 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
                       <line x1="9" y1="21" x2="9" y2="9"></line>
                     </svg>
                     <p className="text-lg font-medium">No data available</p>
-                   
                   </div>
                 </td>
               </tr>

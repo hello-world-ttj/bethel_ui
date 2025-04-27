@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
 import { Church } from "../../types/church";
 import { toast } from "react-toastify";
+import { useRefetch } from "../../context/RefetchContext";
 interface ChurchTableProps {
   searchValue: string;
 }
@@ -10,6 +11,7 @@ interface ChurchTableProps {
 const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<Church[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
+  const { refetchTrigger } = useRefetch();
   const [open, setOpen] = useState(false);
   const baseUrl = `${import.meta.env.VITE_APP_IMAGE_URL}images`;
   const [view, setView] = useState(false);
@@ -53,25 +55,24 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   const handleCloseView = () => {
     setView(false);
   };
-  useEffect(() => {
-    const fetchChurches = async () => {
-      try {
-        const response = await getChurch({
-          search: searchValue,
-          page: currentPage,
-          limit: itemsPerPage,
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch members:", error);
+  const fetchChurches = async () => {
+    try {
+      const response = await getChurch({
+        search: searchValue,
+        page: currentPage,
+        limit: itemsPerPage,
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
+    }
+  };
+  useEffect(() => {
     fetchChurches();
-  }, [isChange, searchValue, currentPage, itemsPerPage]);
+  }, [isChange, searchValue, currentPage, itemsPerPage, refetchTrigger]);
   const handleDelete = async () => {
     try {
       await deleteChurch(selectedId!);
@@ -84,7 +85,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   };
 
   const navigate = useNavigate();
-  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {

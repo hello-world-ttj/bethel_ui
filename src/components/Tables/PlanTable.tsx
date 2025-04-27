@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Plan } from "../../types/plan";
 import { deletePlan, getPlan, getPlanById } from "../../api/planApi";
+import { useRefetch } from "../../context/RefetchContext";
 interface PlanTableProps {
   searchValue: string;
 }
 const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
   const [packageData, setPackageData] = useState<Plan[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
+  const { refetchTrigger } = useRefetch();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
   const [planData, setPlanData] = useState<{
@@ -52,25 +54,24 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
   const handleCloseView = () => {
     setView(false);
   };
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const response = await getPlan({
-          search: searchValue,
-          page: currentPage,
-          limit: itemsPerPage,
-        });
-        setTotalCount(response.totalCount);
-        if (response?.data) {
-          setPackageData(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch plans:", error);
+  const fetchPlans = async () => {
+    try {
+      const response = await getPlan({
+        search: searchValue,
+        page: currentPage,
+        limit: itemsPerPage,
+      });
+      setTotalCount(response.totalCount);
+      if (response?.data) {
+        setPackageData(response.data);
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch plans:", error);
+    }
+  };
+  useEffect(() => {
     fetchPlans();
-  }, [isChange, searchValue, currentPage, itemsPerPage]);
+  }, [isChange, searchValue, currentPage, itemsPerPage, refetchTrigger]);
   const handleDelete = async () => {
     try {
       await deletePlan(selectedId!);
@@ -80,7 +81,7 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
       toast.error(error.message);
     }
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage); // Calculate total pages
+  const totalPages = Math.ceil(totalCount / itemsPerPage); 
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {

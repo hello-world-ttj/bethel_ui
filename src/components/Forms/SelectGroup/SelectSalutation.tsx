@@ -9,16 +9,17 @@ const SelectSalutation: React.FC<SelectSalutationProps> = ({
   onSalutationChange,
   selectedSalutation = "",
 }) => {
-  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(!!selectedSalutation);
-  
-  // Common salutation options
+  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(
+    !!selectedSalutation
+  );
+
   const salutationOptions = [
     { value: "Mr", label: "Mr." },
     { value: "Mrs", label: "Mrs." },
     { value: "Ms", label: "Ms." },
     { value: "Dr", label: "Dr." },
+    { value: "Fr", label: "Fr." },
     { value: "Prof", label: "Prof." },
-    { value: "Rev", label: "Rev." },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,7 +30,9 @@ const SelectSalutation: React.FC<SelectSalutationProps> = ({
 
   return (
     <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">Salutation</label>
+      <label className="mb-2.5 block text-black dark:text-white">
+        Salutation
+      </label>
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
           value={selectedSalutation}
