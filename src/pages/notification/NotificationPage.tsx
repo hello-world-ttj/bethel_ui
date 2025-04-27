@@ -69,6 +69,7 @@ const NotificationPage = () => {
         media: "",
       });
       setPreview(null);
+      setFile(null);
       setIsChange((prev) => !prev);
     } catch (error: any) {
       toast.error(error.message);
