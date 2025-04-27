@@ -69,8 +69,8 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
             {packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark capitalize">
+                    <p className="text-black dark:text-white ">
                       {packageItem.type}
                     </p>
                   </td>

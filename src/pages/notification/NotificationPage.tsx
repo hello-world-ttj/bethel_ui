@@ -6,6 +6,7 @@ import SelectNotificationType from "../../components/Forms/SelectGroup/SelectNot
 import { createNotification } from "../../api/notificationApi";
 import { toast } from "react-toastify";
 import { upload } from "../../api/churchApi";
+import SelectSingleUser from "../../components/Forms/SelectGroup/SelectSingleUser";
 
 const NotificationPage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -126,9 +127,9 @@ const NotificationPage = () => {
               />
             </div>
             <div className="w-full">
-              <SelectMultiUser
-                onUserChange={(values) => setSelectedUsers(values)}
-                selectedUsers={selectedUsers}
+              <SelectSingleUser
+                onUserChange={(values) => setSelectedUsers([values as string])}
+                selectedUser={selectedUsers[0]}
               />
             </div>
             <div className="mb-6">
