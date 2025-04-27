@@ -4,7 +4,8 @@ import { createUser, getUserById, updateUser } from "../../api/userApi";
 import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
 import { toast } from "react-toastify";
 import SelectSalutation from "../../components/Forms/SelectGroup/SelectSalutation";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const AddUser = () => {
   const [userData, setUserData] = useState({
     salutation: "",
@@ -81,7 +82,13 @@ const AddUser = () => {
       salutation: value,
     }));
   };
-
+  const handleMobileChange = (value: string) => {
+    setUserData((prev) => ({
+      ...prev,
+      phone: value,
+    }));
+  };
+ 
   return (
     <div className="flex flex-col gap-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
@@ -158,14 +165,20 @@ const AddUser = () => {
               <label className="mb-2.5 block text-black dark:text-white">
                 Phone
               </label>
-              <input
-                type="text"
-                name="phone"
-                value={userData.phone}
-                onChange={handleChange}
-                placeholder="Enter phone number"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
-              />
+              <PhoneInput
+                  country={"in"}
+                  value={userData.phone}
+                  onChange={handleMobileChange}
+                  inputProps={{
+                    name: "mobile",
+                    required: true,
+                    className:
+                      "w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-10 text-black outline-none transition focus:border-[#0072bc] active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary",
+                  }}
+                  containerClass="phone-input-container"
+                  buttonClass="phone-input-button"
+                  dropdownClass="phone-input-dropdown"
+                />
             </div>
 
             <SelectGroupOne

@@ -1,51 +1,46 @@
 import React, { useState } from "react";
 
-interface SelectSalutationProps {
-  onSalutationChange: (value: string) => void;
-  selectedSalutation: string;
+interface SelectNotificationTypeProps {
+  onTypeChange: (value: string) => void;
+  selectedType: string;
 }
 
-const SelectSalutation: React.FC<SelectSalutationProps> = ({
-  onSalutationChange,
-  selectedSalutation = "",
+const SelectNotificationType: React.FC<SelectNotificationTypeProps> = ({
+  onTypeChange,
+  selectedType = "",
 }) => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(
-    !!selectedSalutation
+    !!selectedType
   );
 
-  const salutationOptions = [
-    { value: "Mr", label: "Mr." },
-    { value: "Mrs", label: "Mrs." },
-    { value: "Ms", label: "Ms." },
-    { value: "Dr", label: "Dr." },
-    { value: "Fr", label: "Fr." },
-    { value: "HG", label: "HG." },
-    { value: "Prof", label: "Prof." },
+  const typeOptions = [
+    { value: "email", label: "Email" },
+    { value: "whatsapp", label: "WhatsApp" },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    onSalutationChange(value);
+    onTypeChange(value);
     setIsOptionSelected(true);
   };
 
   return (
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
-        Salutation
+        Notification Type
       </label>
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
-          value={selectedSalutation}
+          value={selectedType}
           onChange={handleChange}
           className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-[#f09443] active:border-[#f09443] dark:border-form-strokedark dark:bg-form-input dark:focus:border-[#f09443] ${
             isOptionSelected ? "text-black dark:text-white" : ""
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select Salutation
+            Select Notification Type
           </option>
-          {salutationOptions.map((option) => (
+          {typeOptions.map((option) => (
             <option
               key={option.value}
               value={option.value}
@@ -79,4 +74,4 @@ const SelectSalutation: React.FC<SelectSalutationProps> = ({
   );
 };
 
-export default SelectSalutation;
+export default SelectNotificationType;

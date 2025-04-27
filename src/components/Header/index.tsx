@@ -13,7 +13,6 @@ const Header = (props: {
   const { triggerRefetch } = useRefetch();
 
   useEffect(() => {
-    // Load last synced time from localStorage on component mount
     const storedTime = localStorage.getItem("lastSyncedTime");
     if (storedTime) {
       setLastSyncedTime(storedTime);
@@ -24,18 +23,14 @@ const Header = (props: {
     setIsSyncing(true);
     try {
       await clearCache();
-      
-      // Format current time as HH:MM
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
+      let hours = now.getHours();
       const minutes = now.getMinutes().toString().padStart(2, '0');
-      const formattedTime = `${hours}:${minutes}`;
-      
-      // Update state and localStorage
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12; 
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
       setLastSyncedTime(formattedTime);
       localStorage.setItem("lastSyncedTime", formattedTime);
-      
-      // Trigger refetch in all components that use the context
       triggerRefetch();
     } catch (error) {
       console.error("Error syncing data:", error);
@@ -43,6 +38,7 @@ const Header = (props: {
       setIsSyncing(false);
     }
   };
+  
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
