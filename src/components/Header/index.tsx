@@ -3,6 +3,7 @@ import DropdownUser from "./DropdownUser";
 import DarkModeSwitcher from "./DarkModeSwitcher";
 import { clearCache } from "../../api/userApi";
 import { useRefetch } from "../../context/RefetchContext";
+import moment from "moment";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -23,12 +24,8 @@ const Header = (props: {
     setIsSyncing(true);
     try {
       await clearCache();
-      const now = new Date();
-      let hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12; 
-      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+      const now = moment();
+      const formattedTime = now.format('hh:mm A'); 
       setLastSyncedTime(formattedTime);
       localStorage.setItem("lastSyncedTime", formattedTime);
       triggerRefetch();

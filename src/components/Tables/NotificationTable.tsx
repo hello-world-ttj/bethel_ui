@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Notification } from "../../types/notification";
 import { getNotification } from "../../api/notificationApi";
 import { useRefetch } from "../../context/RefetchContext";
+import moment from "moment";
 interface NotificationTableProps {
   isChange: boolean;
 }
@@ -47,6 +48,9 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
         <table className={`w-full table-auto `}>
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
+            <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                Type
+              </th>
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Users
               </th>
@@ -56,12 +60,20 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Content
               </th>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                CreatedAt
+              </th>
             </tr>
           </thead>
           <tbody>
             {packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    <p className="text-black dark:text-white">
+                      {packageItem.type}
+                    </p>
+                  </td>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">
                       {packageItem?.users
@@ -78,6 +90,11 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
                       {packageItem.content}
+                    </p>
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    <p className="text-black dark:text-white">
+                      {moment(packageItem.createdAt).format("YYYY-MM-DD")}
                     </p>
                   </td>
                 </tr>

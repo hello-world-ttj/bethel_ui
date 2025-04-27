@@ -5,4 +5,6 @@ export type Notification = {
   content: string;
   subject: string;
   users: User[];
+  type: string;
+  createdAt: string;
 };
