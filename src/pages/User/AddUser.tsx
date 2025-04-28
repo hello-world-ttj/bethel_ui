@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import SelectSalutation from "../../components/Forms/SelectGroup/SelectSalutation";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+
 const AddUser = () => {
   const [userData, setUserData] = useState({
     salutation: "",
@@ -18,12 +19,28 @@ const AddUser = () => {
     pincode: "",
     nativePlace: "",
   });
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = location;
   const isEditMode = state?.editMode;
   const userId = state?.id;
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.body.classList.contains("dark"));
+    };
+    checkDarkMode();
+    
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (isEditMode && userId) {
@@ -48,6 +65,7 @@ const AddUser = () => {
       fetchUser();
     }
   }, [isEditMode, userId]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -57,6 +75,7 @@ const AddUser = () => {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -70,27 +89,71 @@ const AddUser = () => {
       toast.error(error.message);
     }
   };
+
   const handleChurchChange = (value: string) => {
     setUserData((prev) => ({
       ...prev,
       church: value,
     }));
   };
+
   const handleSalutationChange = (value: string) => {
     setUserData((prev) => ({
       ...prev,
       salutation: value,
     }));
   };
+
   const handleMobileChange = (value: string) => {
     setUserData((prev) => ({
       ...prev,
       phone: value,
     }));
   };
- 
+
+  const customPhoneInputStyles = `
+    .dark .phone-input-container .form-control {
+      background-color: transparent !important;
+      color: white !important;
+      border-color: #1e293b !important;
+    }
+    
+    .dark .phone-input-container .selected-flag {
+      background-color: #1e293b !important;
+    }
+    
+    .dark .phone-input-container .country-list {
+      background-color: #1e293b !important;
+      color: white !important;
+    }
+    
+    .dark .phone-input-container .country-list .country:hover {
+      background-color: #334155 !important;
+    }
+    
+    .dark .phone-input-container .country-list .country.highlight {
+      background-color: #334155 !important;
+    }
+    
+    .dark .phone-input-container .country-list .divider {
+      border-bottom-color: #334155 !important;
+    }
+    
+    .dark .phone-input-container .country-list .search-box {
+      background-color: #1e293b !important;
+      color: white !important;
+    }
+    
+    .dark .phone-input-button {
+      background-color: #1e293b !important;
+      border-color: #1e293b !important;
+    }
+  `;
+
   return (
     <div className="flex flex-col gap-9">
+      <style>{customPhoneInputStyles}</style>
+      
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +194,7 @@ const AddUser = () => {
                   value={userData.name}
                   onChange={handleChange}
                   placeholder="Enter name"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
                 />
               </div>
               <div className="w-full">
@@ -143,8 +206,8 @@ const AddUser = () => {
                   name="regNo"
                   value={userData.regNo}
                   onChange={handleChange}
-                  placeholder="Enter  register number"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                  placeholder="Enter register number"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
                 />
               </div>
             </div>
@@ -158,14 +221,15 @@ const AddUser = () => {
                 value={userData.email}
                 onChange={handleChange}
                 placeholder="Enter email address"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
               />
             </div>
             <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
                 Phone
               </label>
-              <PhoneInput
+              <div className="phone-input-wrapper">
+                <PhoneInput
                   country={"in"}
                   value={userData.phone}
                   onChange={handleMobileChange}
@@ -173,12 +237,30 @@ const AddUser = () => {
                     name: "mobile",
                     required: true,
                     className:
-                      "w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-10 text-black outline-none transition focus:border-[#0072bc] active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary",
+                      "w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-10 text-black outline-none transition focus:border-[#f09443] active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary",
                   }}
-                  containerClass="phone-input-container"
-                  buttonClass="phone-input-button"
-                  dropdownClass="phone-input-dropdown"
+                  containerClass={`phone-input-container ${isDarkMode ? "dark-mode" : ""}`}
+                  buttonClass={`phone-input-button ${isDarkMode ? "dark-mode" : ""}`}
+                  dropdownClass={`phone-input-dropdown ${isDarkMode ? "dark-mode" : ""}`}
+                  containerStyle={{
+                    position: "relative",
+                    zIndex: 50,
+                  }}
+                  buttonStyle={
+                    isDarkMode
+                      ? {
+                          backgroundColor: "#1e293b",
+                          borderColor: "#334155",
+                        }
+                      : undefined
+                  }
+                  dropdownStyle={{
+                    zIndex: 50,
+                    backgroundColor: isDarkMode ? "#1e293b" : "#fff",
+                    color: isDarkMode ? "#fff" : "#000",
+                  }}
                 />
+              </div>
             </div>
 
             <SelectGroupOne
@@ -196,7 +278,7 @@ const AddUser = () => {
                 value={userData.address}
                 onChange={handleChange}
                 placeholder="Enter address"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
               ></textarea>
             </div>
             <div className="mb-6">
@@ -209,7 +291,7 @@ const AddUser = () => {
                 value={userData.nativePlace}
                 onChange={handleChange}
                 placeholder="Enter native place"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
               />
             </div>
             <div className="mb-4.5">
@@ -222,7 +304,7 @@ const AddUser = () => {
                 value={userData.pincode}
                 onChange={handleChange}
                 placeholder="Enter pin code"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
               />
             </div>
             <button
