@@ -152,12 +152,12 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.phone}
+                      {packageItem.phone || "Not Added"}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.church?.name}
+                      {packageItem.church?.name || "Not Added"}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
