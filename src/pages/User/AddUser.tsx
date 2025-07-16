@@ -18,6 +18,8 @@ const AddUser = () => {
     regNo: "",
     pincode: "",
     nativePlace: "",
+    postOffCode: "",
+    street: "",
   });
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -32,13 +34,13 @@ const AddUser = () => {
       setIsDarkMode(document.body.classList.contains("dark"));
     };
     checkDarkMode();
-    
+
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.body, { 
-      attributes: true, 
-      attributeFilter: ['class'] 
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
     });
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -59,6 +61,8 @@ const AddUser = () => {
             pincode: user.pincode || "",
             regNo: user.regNo || "",
             nativePlace: user.nativePlace || "",
+            postOffCode: user.postOffCode || "",
+            street: user.street || "",
           });
         }
       };
@@ -153,7 +157,7 @@ const AddUser = () => {
   return (
     <div className="flex flex-col gap-9">
       <style>{customPhoneInputStyles}</style>
-      
+
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -239,9 +243,15 @@ const AddUser = () => {
                     className:
                       "w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-10 text-black outline-none transition focus:border-[#f09443] active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary",
                   }}
-                  containerClass={`phone-input-container ${isDarkMode ? "dark-mode" : ""}`}
-                  buttonClass={`phone-input-button ${isDarkMode ? "dark-mode" : ""}`}
-                  dropdownClass={`phone-input-dropdown ${isDarkMode ? "dark-mode" : ""}`}
+                  containerClass={`phone-input-container ${
+                    isDarkMode ? "dark-mode" : ""
+                  }`}
+                  buttonClass={`phone-input-button ${
+                    isDarkMode ? "dark-mode" : ""
+                  }`}
+                  dropdownClass={`phone-input-dropdown ${
+                    isDarkMode ? "dark-mode" : ""
+                  }`}
                   containerStyle={{
                     position: "relative",
                     zIndex: 50,
@@ -304,6 +314,32 @@ const AddUser = () => {
                 value={userData.pincode}
                 onChange={handleChange}
                 placeholder="Enter pin code"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
+              />
+            </div>
+            <div className="mb-4.5">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Post Office
+              </label>
+              <input
+                type="text"
+                name="postOffCode"
+                value={userData.postOffCode}
+                onChange={handleChange}
+                placeholder="Enter post office"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
+              />
+            </div>
+            <div className="mb-4.5">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Street
+              </label>
+              <input
+                type="text"
+                name="street"
+                value={userData.street}
+                onChange={handleChange}
+                placeholder="Enter street"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:border-form-strokedark dark:text-white"
               />
             </div>
