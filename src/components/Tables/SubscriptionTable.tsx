@@ -192,6 +192,28 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
                             fill=""
                           />
                         </svg>
+                      </button>{" "}
+                      <button
+                        className="hover:text-primary"
+                        onClick={() =>
+                          navigate("/add-subscription", {
+                            state: {
+                              id: packageItem._id,
+                              editMode: true,
+                            },
+                          })
+                        }
+                      >
+                        <svg
+                          className="fill-current"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M13.232 2.768a1 1 0 0 1 1.416 0l2.5 2.5a1 1 0 0 1 0 1.416L6.865 13.571a1 1 0 0 1-.366.211l-2.142.643a1 1 0 0 1-1.224-1.224l.643-2.142a1 1 0 0 1 .211-.366L13.232 2.768z" />
+                        </svg>
                       </button>
                       <button
                         onClick={() => handleOpen(packageItem._id)}

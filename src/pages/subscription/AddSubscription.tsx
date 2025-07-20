@@ -38,6 +38,9 @@ const AddSubscription = () => {
           const formattedDate = sub.expiryDate
             ? new Date(sub.expiryDate).toISOString().split("T")[0]
             : "";
+
+          const isUserChurchBased = !!sub.user.church;
+
           setSubData((prev: any) => ({
             ...prev,
             ...(isEditMode && { expiryDate: formattedDate || "" }),
@@ -46,13 +49,29 @@ const AddSubscription = () => {
             user: sub.user._id || "",
             plan: sub.plan._id || "",
           }));
-          setSelectedChurch(sub.user.church);
-          setIsChurchBased(!!sub.user.church);
+
+          setIsChurchBased(isUserChurchBased);
+
+          if (isUserChurchBased) {
+            setSelectedChurch(sub.user.church);
+          } else {
+            setSelectedUsers([sub.user._id]);
+          }
         }
       };
+
       fetchSub();
     }
   }, [isEditMode, subId]);
+  useEffect(() => {
+    if (!isChurchBased) {
+      if (subData.user) {
+        setSelectedUsers([subData.user]);
+      } else {
+        setSelectedUsers([]);
+      }
+    }
+  }, [isChurchBased, subData.user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -154,29 +173,32 @@ const AddSubscription = () => {
                   }`}
                 >
                   <span className="dark:hidden">
-                    {/* Light Icon */}
                     <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle cx="8" cy="8" r="5" fill="#969AA1" />
-                    </svg>
-                  </span>
-                  <span className="hidden dark:inline-block">
-                    {/* Dark Icon */}
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
+                      className="fill-primary dark:fill-white"
+                      width="20"
+                      height="22"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M14.3533 10.62C14.2466 10.44 13.9466 10.16 13.1999 10.2933C12.7866 10.3667 12.3666 10.4 11.9466 10.38C10.3933 10.3133 8.98659 9.6 8.00659 8.5C7.13993 7.53333 6.60659 6.27333 6.59993 4.91333C6.59993 4.15333 6.74659 3.42 7.04659 2.72666C7.33993 2.05333 7.13326 1.7 6.98659 1.55333C6.83326 1.4 6.47326 1.18666 5.76659 1.48C3.03993 2.62666 1.35326 5.36 1.55326 8.28666C1.75326 11.04 3.68659 13.3933 6.24659 14.28C6.85993 14.4933 7.50659 14.62 8.17326 14.6467C8.27993 14.6533 8.38659 14.66 8.49326 14.66C10.7266 14.66 12.8199 13.6067 14.1399 11.8133C14.5866 11.1933 14.4666 10.8 14.3533 10.62Z"
-                        fill="#969AA1"
+                        d="M12 2C11.45 2 11 2.45 11 3V6.55L9.05 8.05C8.74 8.28 8.57 8.64 8.57 9.01V10H7C6.45 10 6 10.45 6 11V12C6 12.55 6.45 13 7 13H8.57V20H5C4.45 20 4 20.45 4 21V22H20V21C20 20.45 19.55 20 19 20H15.43V13H17C17.55 13 18 12.55 18 12V11C18 10.45 17.55 10 17 10H15.43V9.01C15.43 8.64 15.26 8.28 14.95 8.05L13 6.55V3C13 2.45 12.55 2 12 2ZM10 20V13H14V20H10Z"
+                        fill=""
+                      />
+                    </svg>
+                  </span>
+                  <span className="hidden dark:inline-block">
+                    <svg
+                      className="fill-primary dark:fill-white"
+                      width="20"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2C11.45 2 11 2.45 11 3V6.55L9.05 8.05C8.74 8.28 8.57 8.64 8.57 9.01V10H7C6.45 10 6 10.45 6 11V12C6 12.55 6.45 13 7 13H8.57V20H5C4.45 20 4 20.45 4 21V22H20V21C20 20.45 19.55 20 19 20H15.43V13H17C17.55 13 18 12.55 18 12V11C18 10.45 17.55 10 17 10H15.43V9.01C15.43 8.64 15.26 8.28 14.95 8.05L13 6.55V3C13 2.45 12.55 2 12 2ZM10 20V13H14V20H10Z"
+                        fill=""
                       />
                     </svg>
                   </span>
