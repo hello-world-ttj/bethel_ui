@@ -9,7 +9,7 @@ import {
 import SelectPlan from "../../components/Forms/SelectGroup/SelectPlan";
 import SelectGroupOne from "../../components/Forms/SelectGroup/SelectGroupOne";
 import { toast } from "react-toastify";
-import SelectSingleUser from "../../components/Forms/SelectGroup/SelectSingleUser";
+import SelectSubscriptionSingleUser from "../../components/Forms/SelectGroup/SelectSubscriptionUser";
 
 const AddSubscription = () => {
   const location = useLocation();
@@ -219,7 +219,7 @@ const AddSubscription = () => {
                 />
               </>
             ) : (
-              <SelectSingleUser
+              <SelectSubscriptionSingleUser
                 onUserChange={(values) => setSelectedUsers([values as string])}
                 selectedUser={selectedUsers[0]}
               />
@@ -235,7 +235,7 @@ const AddSubscription = () => {
                   name="expiryDate"
                   value={subData.expiryDate}
                   onChange={handleChange}
-                  disabled
+                  // disabled
                   placeholder="Enter expiry date"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
                 />
