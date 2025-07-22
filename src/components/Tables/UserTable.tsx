@@ -612,7 +612,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                     {!subscription ? (
                       <div>
                         {!showAddForm ? (
-                          <div className="flex flex-col items-center mt-4 justify-center py-10 bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                          <div className="flex flex-col items-center mt-4 justify-center py-10 bg-white rounded-lg shadow-sm  dark:bg-boxdark">
                             <div className="flex items-center gap-2 mb-2">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -651,7 +651,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                             </button>
                           </div>
                         ) : (
-                          <div className="p-6 bg-white rounded-lg shadow mt-4 dark:bg-gray-800">
+                          <div className="p-6 bg-white rounded-lg shadow mt-4 dark:bg-boxdark">
                             <form onSubmit={handleSubmit}>
                               <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">
                                 Add Subscription
@@ -666,7 +666,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                                   value={subData.receipt}
                                   onChange={handleChange}
                                   placeholder="Enter receipt number"
-                                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white dark:bg-form-input"
                                 />
                               </div>
                               <SelectPlan
@@ -684,7 +684,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                                 <button
                                   type="button"
                                   onClick={() => setShowAddForm(false)}
-                                  className="w-full rounded bg-gray-300 p-3 font-medium text-black hover:bg-opacity-90"
+                                  className="w-full rounded bg-gray-300 p-3 font-medium text-black hover:bg-opacity-90 dark:text-white"
                                 >
                                   Cancel
                                 </button>
