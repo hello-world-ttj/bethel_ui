@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
-import UserOne from '../../images/user/user-01.jpg';
+import logo from '../../images/bethel.png';
 import { getAdmin } from '../../api/authApi';
 
 const DropdownUser = () => {
@@ -29,7 +29,7 @@ useEffect(() => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img src={logo} alt="User" />
         </span>
 
         {/* <svg
