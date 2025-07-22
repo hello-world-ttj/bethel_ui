@@ -65,3 +65,12 @@ export const getPdf = async (): Promise<any | null> => {
     return null;
   }
 };
+export const getSubscriptionByUserId = async (id: string): Promise<any | null> => {
+  try {
+    const response = await axiosInstance.get(`/subscription/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch subscription:", error);
+    return null;
+  }
+};

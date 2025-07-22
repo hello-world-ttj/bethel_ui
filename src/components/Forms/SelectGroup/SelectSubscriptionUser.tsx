@@ -23,7 +23,7 @@ const SelectSubscriptionSingleUser: React.FC<SelectSingleUserProps> = ({
     const fetchUsers = async () => {
       const response = await getMember({
         user: "all",
-        status: "active",
+        status: "inactive",
       });
       const userOptions = response.data.map((user: User) => ({
         label: user.name,

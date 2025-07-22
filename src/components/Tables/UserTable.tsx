@@ -4,11 +4,21 @@ import { getMember, deleteUser, getUserById } from "../../api/userApi";
 import { User } from "../../types/user";
 import { toast } from "react-toastify";
 import { useRefetch } from "../../context/RefetchContext";
+import { getSubscriptionByUserId, updateSubscription } from "../../api/subscriptionApi";
 interface UserTableProps {
   searchValue: string;
   tab: string;
 }
-
+interface Subscription {
+  user: string;
+  status: string;
+  expiryDate: string;
+  plan: {
+    name: string;
+  };
+  receipt: string;
+  _id: string;
+}
 const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const [packageData, setPackageData] = useState<User[]>([]);
   const [isChange, setIsChange] = useState<boolean>(false);
@@ -27,6 +37,11 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { refetchTrigger } = useRefetch();
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+
+  const [editingExpiry, setEditingExpiry] = useState(false);
+  const [newExpiryDate, setNewExpiryDate] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -43,7 +58,10 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const handleView = async (id: string) => {
     try {
       const response = await getUserById(id);
+      const subscriptionData = await getSubscriptionByUserId(id);
+      setSubscription(subscriptionData.data);
       const user = response.data;
+      console.log("subscription", subscription);
 
       if (user) {
         setUserData({
@@ -326,8 +344,8 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
           </div>
         )}
         {view && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl transform transition-transform duration-300 scale-100 dark:bg-boxdark">
+          <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black bg-opacity-60 transition-opacity duration-300">
+            <div className="bg-white max-h-[70vh] overflow-y-auto rounded-lg shadow-xl w-full max-w-3xl transform transition-transform duration-300 scale-100 dark:bg-boxdark">
               <div className="border-b border-stroke px-6 py-4 dark:border-strokedark flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-black dark:text-white">
                   User Details
@@ -430,14 +448,14 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                         </div>
                       </div>
 
-                      <div className="flex">
+                      <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
                         <div className="w-1/3 text-gray-500 dark:text-gray-400">
                           Status
                         </div>
                         <div className="w-2/3">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              userData.status === "Active"
+                              userData.status === "active"
                                 ? "bg-success bg-opacity-10 text-success"
                                 : "bg-danger bg-opacity-10 text-danger"
                             }`}
@@ -447,6 +465,96 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                         </div>
                       </div>
                     </div>
+                    {subscription && (
+                      <div className="mt-8 pr-4">
+                        <h3 className="text-lg font-semibold text-black mb-4 dark:text-white">
+                          Subscription Info
+                        </h3>
+
+                       <div className="grid grid-cols-1 gap-y-4 pr-4">
+
+                          <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                            <div className="w-1/3 text-gray-500 dark:text-gray-400">
+                              Plan Name
+                            </div>
+                            <div className="w-2/3 font-medium text-black dark:text-white">
+                              {subscription.plan?.name || "N/A"}
+                            </div>
+                          </div>
+
+                          <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
+                            <div className="w-1/3 text-gray-500 dark:text-gray-400">
+                              Receipt
+                            </div>
+                            <div className="w-2/3 font-medium text-black dark:text-white">
+                              {subscription.receipt || "N/A"}
+                            </div>
+                          </div>
+
+                         <div className="flex border-b border-stroke pb-3 dark:border-strokedark items-center col-span-full">
+
+                            <div className="w-1/3 text-gray-500 dark:text-gray-400">
+                              Expiry Date
+                            </div>
+                            <div className="w-2/3 font-medium text-black dark:text-white flex items-center gap-2">
+                              {editingExpiry ? (
+                                <>
+                                  <input
+                                    type="date"
+                                    value={newExpiryDate.split("T")[0]}
+                                    onChange={(e) =>
+                                      setNewExpiryDate(e.target.value)
+                                    }
+                                    className=" px-2 py-1 text-sm dark:bg-meta-4 dark:text-white"
+                                  />
+                                  <button
+                                    onClick={async () => {
+                                      try {
+                                        await updateSubscription(subscription._id, {
+                                          expiryDate: newExpiryDate,
+                                        });
+                                        setSubscription((prev: any) => ({
+                                          ...prev,
+                                          expiryDate: newExpiryDate,
+                                        }));
+                                        setEditingExpiry(false);
+                                      } catch (err) {
+                                        console.error("Failed to update expiry:", err);
+                                      }
+                                    }}
+                                    className="text-success  text-sm"
+                                  >
+                                   ✅ 
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setEditingExpiry(false);
+                                      setNewExpiryDate(subscription.expiryDate);
+                                    }}
+                                    className="text-danger text-sm"
+                                  >
+                                  ❌
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  {new Date(
+                                    subscription.expiryDate
+                                  ).toLocaleDateString()}
+                                  <button
+                                    onClick={() => setEditingExpiry(true)}
+                                    className="ml-2 text-blue-500 hover:text-blue-700"
+                                    title="Edit Expiry Date"
+                                  >
+                                    ✏️
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -147,7 +147,6 @@ const AddSubscription = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <form onSubmit={handleSubmit}>
           <div className="p-6.5">
-            {/* Styled Church-Based Switcher (same as DarkModeSwitcher) */}
             <div className="mb-4.5 flex items-center gap-4">
               <label className="text-black dark:text-white font-medium">
                 Church Based
