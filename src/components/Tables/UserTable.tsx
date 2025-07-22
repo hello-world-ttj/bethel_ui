@@ -4,7 +4,12 @@ import { getMember, deleteUser, getUserById } from "../../api/userApi";
 import { User } from "../../types/user";
 import { toast } from "react-toastify";
 import { useRefetch } from "../../context/RefetchContext";
-import { getSubscriptionByUserId, updateSubscription } from "../../api/subscriptionApi";
+import {
+  createSubscription,
+  getSubscriptionByUserId,
+  updateSubscription,
+} from "../../api/subscriptionApi";
+import SelectPlan from "../Forms/SelectGroup/SelectPlan";
 interface UserTableProps {
   searchValue: string;
   tab: string;
@@ -24,6 +29,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -45,6 +51,11 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [subData, setSubData] = useState(() => ({
+    receipt: "",
+    user: "",
+    plan: "",
+  }));
   const handleOpen = (id: string) => {
     setSelectedId(id);
     setOpen(true);
@@ -54,14 +65,32 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     setOpen(false);
     setSelectedId(null);
   };
-
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setSubData((prev: any) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handlePlanChange = (value: string) => {
+    setSubData((prev: any) => ({
+      ...prev,
+      plan: value,
+    }));
+  };
   const handleView = async (id: string) => {
     try {
+      setSubData((prev: any) => ({
+        ...prev,
+        user: id,
+      }));
       const response = await getUserById(id);
       const subscriptionData = await getSubscriptionByUserId(id);
       setSubscription(subscriptionData.data);
+
       const user = response.data;
-      console.log("subscription", subscription);
 
       if (user) {
         setUserData({
@@ -122,6 +151,16 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     }
   };
   const navigate = useNavigate();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createSubscription(subData);
+      setIsChange((prevState) => !prevState);
+      setView(false);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -160,7 +199,6 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                         : ""}{" "}
                       {packageItem.name}
                     </h5>
-                    {/* <p className="text-sm">{packageItem.name}</p> */}
                   </td>
 
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -471,8 +509,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                           Subscription Info
                         </h3>
 
-                       <div className="grid grid-cols-1 gap-y-4 pr-4">
-
+                        <div className="grid grid-cols-1 gap-y-4 pr-4">
                           <div className="flex border-b border-stroke pb-3 dark:border-strokedark">
                             <div className="w-1/3 text-gray-500 dark:text-gray-400">
                               Plan Name
@@ -491,8 +528,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                             </div>
                           </div>
 
-                         <div className="flex border-b border-stroke pb-3 dark:border-strokedark items-center col-span-full">
-
+                          <div className="flex border-b border-stroke pb-3 dark:border-strokedark items-center col-span-full">
                             <div className="w-1/3 text-gray-500 dark:text-gray-400">
                               Expiry Date
                             </div>
@@ -510,21 +546,27 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                                   <button
                                     onClick={async () => {
                                       try {
-                                        await updateSubscription(subscription._id, {
-                                          expiryDate: newExpiryDate,
-                                        });
+                                        await updateSubscription(
+                                          subscription._id,
+                                          {
+                                            expiryDate: newExpiryDate,
+                                          }
+                                        );
                                         setSubscription((prev: any) => ({
                                           ...prev,
                                           expiryDate: newExpiryDate,
                                         }));
                                         setEditingExpiry(false);
                                       } catch (err) {
-                                        console.error("Failed to update expiry:", err);
+                                        console.error(
+                                          "Failed to update expiry:",
+                                          err
+                                        );
                                       }
                                     }}
                                     className="text-success  text-sm"
                                   >
-                                   ✅ 
+                                    ✅
                                   </button>
                                   <button
                                     onClick={() => {
@@ -533,7 +575,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                                     }}
                                     className="text-danger text-sm"
                                   >
-                                  ❌
+                                    ❌
                                   </button>
                                 </>
                               ) : (
@@ -554,6 +596,93 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
                           </div>
                         </div>
                       </div>
+                    )}
+                    {!subscription ? (
+                      <div>
+                        {!showAddForm ? (
+                          <div className="flex flex-col items-center mt-4 justify-center py-10 bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                            <div className="flex items-center gap-2 mb-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-gray-400"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M8.5 3a1.5 1.5 0 013 0v5.5H17a1.5 1.5 0 010 3h-5.5V17a1.5 1.5 0 01-3 0v-5.5H3a1.5 1.5 0 010-3h5.5V3z" />
+                              </svg>
+                              <p className="text-base font-medium text-gray-600 dark:text-gray-300">
+                                No Subscription Found
+                              </p>
+                            </div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
+                              You can add a subscription to get started.
+                            </p>
+                            <button
+                              onClick={() => setShowAddForm(true)}
+                              className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-md hover:bg-primary-dark transition"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 4v16m8-8H4"
+                                />
+                              </svg>
+                              Add Subscription
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="p-6 bg-white rounded-lg shadow mt-4 dark:bg-gray-800">
+                            <form onSubmit={handleSubmit}>
+                              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">
+                                Add Subscription
+                              </h3>
+                              <div className="mb-4.5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Receipt Number
+                                </label>
+                                <input
+                                  type="text"
+                                  name="receipt"
+                                  value={subData.receipt}
+                                  onChange={handleChange}
+                                  placeholder="Enter receipt number"
+                                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-[#f09443] dark:text-white"
+                                />
+                              </div>
+                              <SelectPlan
+                                onPlanChange={handlePlanChange}
+                                selectedPlan={subData.plan}
+                              />
+                              <div className="flex gap-4 mt-4">
+                                <button
+                                  type="submit"
+                                  className="w-full rounded bg-[#f09443] p-3 font-medium text-white hover:bg-opacity-90"
+                                >
+                                  Submit
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setShowAddForm(false)}
+                                  className="w-full rounded bg-gray-300 p-3 font-medium text-black hover:bg-opacity-90"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <></>
                     )}
                   </div>
                 </div>
