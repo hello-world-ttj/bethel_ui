@@ -111,6 +111,12 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     }
   };
   const handleCloseView = () => {
+    setSubData(() => ({
+      receipt: "",
+      user: "",
+      plan: "",
+    }));
+    setShowAddForm(false);
     setView(false);
   };
   const fetchMembers = async () => {
@@ -156,6 +162,12 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     try {
       await createSubscription(subData);
       setIsChange((prevState) => !prevState);
+      setSubData(() => ({
+        receipt: "",
+        user: "",
+        plan: "",
+      }));
+      setShowAddForm(false);
       setView(false);
     } catch (error: any) {
       toast.error(error.message);
