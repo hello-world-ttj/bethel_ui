@@ -27,7 +27,7 @@ jobs:
       - name: Build React app
         run: npm run build
         env:
-          VITE_APP_AWS_API_URL: ${{ secrets.VITE_APP_AWS_API_URL }}
+          VITE_APP_API_URL: ${{ secrets.VITE_APP_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
 
       # 5️⃣ Verify dist folder (optional)
