@@ -9,30 +9,28 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1️⃣ Checkout repo
+      # Checkout repo
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js 20+
+      # Setup Node.js 20+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
 
-      # 3️⃣ Install dependencies
+      # Install dependencies
       - name: Install dependencies
         run: npm install
-        working-directory: ./frontend # <-- change if your React app is in a subfolder
 
-      # 4️⃣ Build React app
+      # Build React app
       - name: Build React app
         run: npm run build
         env:
           VITE_APP_AWS_API_URL: ${{ secrets.VITE_APP_AWS_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
-        working-directory: ./frontend # <-- same folder as package.json
 
-      # 5️⃣ Deploy to Firebase
+      # Deploy to Firebase
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -41,4 +39,4 @@ jobs:
           channelId: live
           projectId: bethel-1e8fc
           firebaseToolsVersion: latest
-          entryPoint: ./frontend # <-- folder containing firebase.json & build/
+          entryPoint: .
