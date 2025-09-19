@@ -1,4 +1,4 @@
-name: Deploy React to Firebase Hosting
+name: Deploy React (Vite) to Firebase Hosting
 
 on:
   push:
@@ -23,18 +23,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Build React app
+      # 4️⃣ Build React app (Vite)
       - name: Build React app
         run: npm run build
         env:
           VITE_APP_AWS_API_URL: ${{ secrets.VITE_APP_AWS_API_URL }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
 
-      # 5️⃣ Check if build folder exists (optional, for debugging)
-      - name: Verify build folder
-        run: ls -la build
+      # 5️⃣ Verify dist folder (optional)
+      - name: Verify dist folder
+        run: ls -la dist
 
-      # 6️⃣ Deploy to Firebase
+      # 6️⃣ Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
