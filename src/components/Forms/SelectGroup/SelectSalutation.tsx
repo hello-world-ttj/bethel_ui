@@ -21,6 +21,7 @@ const SelectSalutation: React.FC<SelectSalutationProps> = ({
     { value: "Fr", label: "Fr." },
     { value: "HG", label: "HG." },
     { value: "Prof", label: "Prof." },
+    { value: "Sr", label: "Sister" },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
