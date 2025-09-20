@@ -1,19 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import ClickOutside from '../ClickOutside';
-import logo from '../../images/bethel.png';
-import { getAdmin } from '../../api/authApi';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ClickOutside from "../ClickOutside";
+import logo from "../../images/bethel.png";
+import { getAdmin } from "../../api/authApi";
+import { updateExpiry } from "../../api/subscriptionApi";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-const [admin,setAdmin] = useState(false); 
-useEffect(() => {
-  const fetchAdmin=async()=>{
-    const response = await getAdmin();
-    setAdmin(response?.data);
-  }
-  fetchAdmin();
-},[]);
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      const response = await getAdmin();
+
+      setAdmin(response?.data);
+    };
+    const updateSubscription = async () => {
+      await updateExpiry();
+    };
+    fetchAdmin();
+    updateSubscription();
+  }, []);
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
