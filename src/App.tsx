@@ -17,6 +17,9 @@ import ChurchUserList from "./pages/Church/ChurchUserList";
 import SignIn from "./pages/authentication/SignIn";
 import PrivateRouter from "./layout/PrivateRouter";
 import NotificationPage from "./pages/notification/NotificationPage";
+import MagazineList from "./pages/magazine/MagazineList";
+import AddMagazine from "./pages/magazine/AddMagazine";
+import PdfFlipViewer from "./pages/magazine/FlipBookPage";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,6 +90,17 @@ function App() {
           </PrivateRouter>
         }
       />
+         <Route
+        path="/magazine"
+        element={
+          <PrivateRouter>
+            <DefaultLayout>
+              <PageTitle title="Bethel Patrika || Plan" />
+              <MagazineList />
+            </DefaultLayout>
+          </PrivateRouter>
+        }
+      />
         <Route
         path="/notifications"
         element={
@@ -128,6 +142,26 @@ function App() {
               <PageTitle title="Bethel Patrika || Church" />
               <AddChurch />
             </DefaultLayout>
+          </PrivateRouter>
+        }
+      />
+        <Route
+        path="/add-magazine"
+        element={
+          <PrivateRouter>
+            <DefaultLayout>
+              <PageTitle title="Bethel Patrika || Magazine" />
+              <AddMagazine />
+            </DefaultLayout>
+          </PrivateRouter>
+        }
+      />
+       <Route
+        path="/pdf-viewer"
+        element={
+          <PrivateRouter>
+              <PageTitle title="Bethel Patrika || Magazine" />
+              <PdfFlipViewer />
           </PrivateRouter>
         }
       />

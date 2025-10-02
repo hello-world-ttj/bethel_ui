@@ -73,3 +73,21 @@ export const upload = async (file: File): Promise<any | null> => {
     return null;
   }
 };
+export const uploadS3 = async (file: File): Promise<any | null> => {
+  try {
+    const formData = new FormData();
+    formData.append("pdf", file);
+    const response = await axiosInstance.post(`/upload/s3`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    const errorMsg =
+      error.response?.data?.message || "An error occurred during file upload";
+    toast.error(errorMsg);
+    return null;
+  }
+};
