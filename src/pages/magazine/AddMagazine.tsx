@@ -6,6 +6,7 @@ import { createMagazine } from "../../api/magazineApi";
 
 const AddMagazine = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setformData] = useState({
     name: "",
@@ -36,6 +37,7 @@ const AddMagazine = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       let pdfUrl = formData.pdf;
 
       if (preview && file) {
@@ -53,6 +55,8 @@ const AddMagazine = () => {
       navigate("/magazine");
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,9 +113,10 @@ const AddMagazine = () => {
             </div>
             <button
               type="submit"
+              disabled={loading}
               className="flex w-full justify-center rounded bg-[#f09443] p-3 font-medium text-gray hover:bg-opacity-90"
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
