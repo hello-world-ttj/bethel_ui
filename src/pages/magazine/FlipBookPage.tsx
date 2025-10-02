@@ -81,7 +81,7 @@ const PdfFlipViewer = () => {
       <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/magazine")}
             className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-2 rounded-lg flex items-center gap-2 transition-all shadow-sm hover:shadow"
           >
             <BsX size={18} />
