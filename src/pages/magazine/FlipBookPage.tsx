@@ -4,9 +4,11 @@ import HTMLFlipBook from "react-pageflip";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { BsChevronLeft, BsChevronRight, BsPrinter, BsX } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const PdfFlipViewer = () => {
+  const navigate = useNavigate();
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -79,7 +81,7 @@ const PdfFlipViewer = () => {
       <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
-            onClick={() => window.close()}
+            onClick={() => navigate("/")}
             className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-5 py-2 rounded-lg flex items-center gap-2 transition-all shadow-sm hover:shadow"
           >
             <BsX size={18} />
