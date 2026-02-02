@@ -7,3 +7,4 @@ const Loader = () => {
 };
 
 export default Loader;
+export { default as TableLoader } from './TableLoader';

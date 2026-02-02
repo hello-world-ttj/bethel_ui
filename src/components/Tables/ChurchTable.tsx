@@ -4,6 +4,7 @@ import { deleteChurch, getChurch, getChurchById } from "../../api/churchApi";
 import { Church } from "../../types/church";
 import { toast } from "react-toastify";
 import { useRefetch } from "../../context/RefetchContext";
+import TableLoader from "../../common/Loader/TableLoader";
 interface ChurchTableProps {
   searchValue: string;
 }
@@ -15,6 +16,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   const [open, setOpen] = useState(false);
   const baseUrl = `${import.meta.env.VITE_APP_IMAGE_URL}images`;
   const [view, setView] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [churchData, setChurchData] = useState<{
     name: string;
     image: string;
@@ -57,6 +59,7 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
   };
   const fetchChurches = async () => {
     try {
+      setIsLoading(true);
       const response = await getChurch({
         search: searchValue,
         page: currentPage,
@@ -68,6 +71,8 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
       }
     } catch (error) {
       console.error("Failed to fetch members:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -119,7 +124,13 @@ const ChurchTable: React.FC<ChurchTableProps> = ({ searchValue }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={5}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

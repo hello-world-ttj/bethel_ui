@@ -10,6 +10,7 @@ import {
   updateSubscription,
 } from "../../api/subscriptionApi";
 import SelectPlan from "../Forms/SelectGroup/SelectPlan";
+import TableLoader from "../../common/Loader/TableLoader";
 interface UserTableProps {
   searchValue: string;
   tab: string;
@@ -30,6 +31,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -121,6 +123,7 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
   };
   const fetchMembers = async () => {
     try {
+      setIsLoading(true);
       const response = await getMember({
         search: searchValue,
         page: currentPage,
@@ -134,6 +137,8 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
     } catch (error) {
       console.error("Failed to fetch members:", error);
       toast.error("Failed to load data. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -201,7 +206,13 @@ const UserTable: React.FC<UserTableProps> = ({ searchValue, tab }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={7}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

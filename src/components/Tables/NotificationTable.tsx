@@ -3,6 +3,7 @@ import { Notification } from "../../types/notification";
 import { getNotification } from "../../api/notificationApi";
 import { useRefetch } from "../../context/RefetchContext";
 import moment from "moment";
+import TableLoader from "../../common/Loader/TableLoader";
 
 interface NotificationTableProps {
   isChange: boolean;
@@ -15,10 +16,12 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [expandedContents, setExpandedContents] = useState<Record<number, boolean>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const maxLength = 30;
   
   const fetchNotifications = async () => {
     try {
+      setIsLoading(true);
       const response = await getNotification({
         page: currentPage,
         limit: itemsPerPage,
@@ -29,6 +32,8 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
       }
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -84,7 +89,13 @@ const NotificationTable: React.FC<NotificationTableProps> = ({ isChange }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={5}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, index) => (
                 <tr key={index}>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark capitalize">

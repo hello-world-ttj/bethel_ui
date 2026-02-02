@@ -9,6 +9,7 @@ import {
 } from "../../api/subscriptionApi";
 import moment from "moment-timezone";
 import { useRefetch } from "../../context/RefetchContext";
+import TableLoader from "../../common/Loader/TableLoader";
 interface SubscriptionTableProps {
   searchValue: string;
   tab: string;
@@ -22,6 +23,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   const [open, setOpen] = useState(false);
   const { refetchTrigger } = useRefetch();
   const [view, setView] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [subscriptionData, setSubscriptionData] = useState<{
     user: string;
     status: string;
@@ -66,6 +68,7 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
   };
   const fetchSubscriptions = async () => {
     try {
+      setIsLoading(true);
       const response = await getSubscription({
         search: searchValue,
         ...(tab !== "all" && { status: tab }),
@@ -78,6 +81,8 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
       }
     } catch (error) {
       console.error("Failed to fetch subscriptions:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -128,7 +133,13 @@ const SubscriptionTable: React.FC<SubscriptionTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={6}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

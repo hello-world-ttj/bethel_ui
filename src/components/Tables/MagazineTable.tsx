@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteMagazine, getMagazine } from "../../api/magazineApi";
 import { Magazine } from "../../types/magazine";
 import { toast } from "react-toastify";
+import TableLoader from "../../common/Loader/TableLoader";
 
 interface TableProps {
   searchValue: string;
@@ -17,8 +18,10 @@ const MagazineTable: React.FC<TableProps> = ({ searchValue }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const fetchMagazines = async () => {
     try {
+      setIsLoading(true);
       const response = await getMagazine({
         search: searchValue,
         page: currentPage,
@@ -30,6 +33,8 @@ const MagazineTable: React.FC<TableProps> = ({ searchValue }) => {
       }
     } catch (error) {
       console.error("Failed to fetch magazines:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +88,13 @@ const MagazineTable: React.FC<TableProps> = ({ searchValue }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={3}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

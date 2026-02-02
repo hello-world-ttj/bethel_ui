@@ -2,12 +2,14 @@ import moment from "moment-timezone";
 import { subscription } from "../../types/subscription";
 import { getPdf } from "../../api/subscriptionApi";
 import { toast } from "react-toastify";
+import TableLoader from "../../common/Loader/TableLoader";
 
 type TableOneProps = {
   brandData: subscription[];
+  isLoading?: boolean;
 };
 
-const TableOne: React.FC<TableOneProps> = ({ brandData }) => {
+const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => {
   const handlePdf = async () => {
     try {
       const pdf = await getPdf();
@@ -79,7 +81,9 @@ const TableOne: React.FC<TableOneProps> = ({ brandData }) => {
           </div>
         </div>
 
-        {brandData?.length > 0 ? brandData?.map((brand, key) => (
+        {isLoading ? (
+          <TableLoader />
+        ) : brandData?.length > 0 ? brandData?.map((brand, key) => (
           <div
             className={`grid grid-cols-3 sm:grid-cols-5 ${
               key === brandData.length - 1

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { Plan } from "../../types/plan";
 import { deletePlan, getPlan, getPlanById } from "../../api/planApi";
 import { useRefetch } from "../../context/RefetchContext";
+import TableLoader from "../../common/Loader/TableLoader";
 interface PlanTableProps {
   searchValue: string;
 }
@@ -13,6 +14,7 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
   const { refetchTrigger } = useRefetch();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [planData, setPlanData] = useState<{
     name: string;
     status: string;
@@ -56,6 +58,7 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
   };
   const fetchPlans = async () => {
     try {
+      setIsLoading(true);
       const response = await getPlan({
         search: searchValue,
         page: currentPage,
@@ -67,6 +70,8 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
       }
     } catch (error) {
       console.error("Failed to fetch plans:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -110,7 +115,13 @@ const PlanTable: React.FC<PlanTableProps> = ({ searchValue }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={4}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">

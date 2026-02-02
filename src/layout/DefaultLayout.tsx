@@ -2,12 +2,18 @@ import React, { useState, ReactNode } from 'react';
 import Header from '../components/Header/index';
 import Sidebar from '../components/Sidebar/index';
 import { RefetchProvider } from '../context/RefetchContext';
+import { AdminProvider, useAdmin } from '../context/AdminContext';
+import Loader from '../common/Loader';
 
-const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const DefaultLayoutContent: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isLoading } = useAdmin();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
-    <RefetchProvider>
     <div className="dark:bg-orange-600 dark:text-orange-200">
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden bg-orange-50 dark:bg-black ">
@@ -33,7 +39,16 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
       </div>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </div>
-    </RefetchProvider>
+  );
+};
+
+const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+  return (
+    <AdminProvider>
+      <RefetchProvider>
+        <DefaultLayoutContent>{children}</DefaultLayoutContent>
+      </RefetchProvider>
+    </AdminProvider>
   );
 };
 

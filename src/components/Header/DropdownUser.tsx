@@ -1,25 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import ClickOutside from "../ClickOutside";
 import logo from "../../images/bethel.png";
-import { getAdmin } from "../../api/authApi";
-import { updateExpiry } from "../../api/subscriptionApi";
+import { useAdmin } from "../../context/AdminContext";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [admin, setAdmin] = useState(false);
-  useEffect(() => {
-    const fetchAdmin = async () => {
-      const response = await getAdmin();
-
-      setAdmin(response?.data);
-    };
-    const updateSubscription = async () => {
-      await updateExpiry();
-    };
-    fetchAdmin();
-    updateSubscription();
-  }, []);
+  const { admin, isLoading } = useAdmin();
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -29,13 +16,18 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {admin?.name}
+            {isLoading ? "Loading..." : admin?.name || "Admin"}
           </span>
           {/* <span className="block text-xs">UX Designer</span> */}
         </span>
 
-        <span className="h-12 w-12 rounded-full">
+        <span className="h-12 w-12 rounded-full relative">
           <img src={logo} alt="User" />
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded-full">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-t-transparent"></div>
+            </div>
+          )}
         </span>
 
         {/* <svg

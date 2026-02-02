@@ -8,6 +8,7 @@ import {
 } from "../../api/userApi";
 import { User } from "../../types/user";
 import { useRefetch } from "../../context/RefetchContext";
+import TableLoader from "../../common/Loader/TableLoader";
 interface UserTableProps {
   searchValue: string;
 }
@@ -19,6 +20,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   const [isChange, setIsChange] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -65,6 +67,7 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
   };
   const fetchMembers = async () => {
     try {
+      setIsLoading(true);
       const response = await getMemberChurch(id || "", {
         search: searchValue,
         page: currentPage,
@@ -77,6 +80,8 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
       }
     } catch (error) {
       console.error("Failed to fetch members:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -131,7 +136,13 @@ const UserSubTable: React.FC<UserTableProps> = ({ searchValue }) => {
             </tr>
           </thead>
           <tbody>
-            {packageData.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={6}>
+                  <TableLoader />
+                </td>
+              </tr>
+            ) : packageData.length > 0 ? (
               packageData.map((packageItem, key) => (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
