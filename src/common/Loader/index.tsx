@@ -8,3 +8,4 @@ const Loader = () => {
 
 export default Loader;
 export { default as TableLoader } from './TableLoader';
+export { default as CardSkeleton } from './CardSkeleton';

@@ -1,7 +1,7 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-export default function MonthlySalesChart({ data }: any) {
+export default function MonthlySalesChart({ data, isLoading = false }: any) {
   const options: ApexOptions = {
     colors: ["#f09443"],
     chart: {
@@ -84,9 +84,35 @@ export default function MonthlySalesChart({ data }: any) {
   const series = [
     {
       name: "Subscription",
-      data: data
+      data: data || Array(12).fill(0)
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="overflow-hidden rounded-sm border border-stroke bg-white px-5 pt-5 dark:border-strokedark dark:bg-white/[0.03] sm:px-6 sm:pt-6 animate-pulse">
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-32"></div>
+        </div>
+
+        <div className="max-w-full overflow-x-auto">
+          <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
+            <div className="h-[180px] bg-gray-200 dark:bg-gray-700 rounded flex items-end justify-around px-4 pb-4">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-300 dark:bg-gray-600 rounded-t w-8"
+                  style={{
+                    height: `${Math.random() * 80 + 20}%`,
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-hidden rounded-sm border border-stroke bg-white px-5 pt-5 dark:border-strokedark dark:bg-white/[0.03] sm:px-6 sm:pt-6">
