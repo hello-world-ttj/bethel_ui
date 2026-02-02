@@ -3,15 +3,21 @@ import { subscription } from "../../types/subscription";
 import { getPdf } from "../../api/subscriptionApi";
 import { toast } from "react-toastify";
 import TableLoader from "../../common/Loader/TableLoader";
+import { useState } from "react";
 
 type TableOneProps = {
   brandData: subscription[];
   isLoading?: boolean;
 };
 
-const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => {
+const TableOne: React.FC<TableOneProps> = ({
+  brandData,
+  isLoading = false,
+}) => {
+  const [pdfLoading, setPdfLoading] = useState(false);
   const handlePdf = async () => {
     try {
+      setPdfLoading(true);
       const pdf = await getPdf();
       const pdfUrl = pdf.data.pdfUrl;
       if (pdfUrl) {
@@ -21,6 +27,8 @@ const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => 
       }
     } catch (error) {
       toast.error("No data found");
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -31,8 +39,11 @@ const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => 
           Subscriptions
         </h4>
         <button
-          className="flex items-center rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none"
+          className={`flex items-center rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none ${
+            pdfLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={handlePdf}
+          disabled={pdfLoading}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +59,7 @@ const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => 
               d="M6 9V3h12v6M6 18h12v-3M6 15h12v6H6v-6z"
             />
           </svg>
-          Print
+          {pdfLoading ? "Preparing PDF..." : "PDF"}
         </button>
       </div>
 
@@ -83,53 +94,57 @@ const TableOne: React.FC<TableOneProps> = ({ brandData, isLoading = false }) => 
 
         {isLoading ? (
           <TableLoader />
-        ) : brandData?.length > 0 ? brandData?.map((brand, key) => (
-          <div
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              key === brandData.length - 1
-                ? ""
-                : "border-b border-stroke dark:border-strokedark"
-            }`}
-            key={key}
-          >
-            <div className="flex items-center gap-3 p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">{brand?.user?.name}</p>
-            </div>
+        ) : brandData?.length > 0 ? (
+          brandData?.map((brand, key) => (
+            <div
+              className={`grid grid-cols-3 sm:grid-cols-5 ${
+                key === brandData.length - 1
+                  ? ""
+                  : "border-b border-stroke dark:border-strokedark"
+              }`}
+              key={key}
+            >
+              <div className="flex items-center gap-3 p-2.5 xl:p-5">
+                <p className="text-black dark:text-white">
+                  {brand?.user?.name}
+                </p>
+              </div>
 
-            <div className="flex items-center gap-3 p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">
-                {brand.user?.church?.name}
-              </p>
-            </div>
+              <div className="flex items-center gap-3 p-2.5 xl:p-5">
+                <p className="text-black dark:text-white">
+                  {brand.user?.church?.name}
+                </p>
+              </div>
 
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">{brand.plan.name}</p>
-            </div>
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">
-                {moment(brand.expiryDate).format("DD-MM-YYYY")}
-              </p>
-            </div>
+              <div className="flex items-center justify-center p-2.5 xl:p-5">
+                <p className="text-black dark:text-white">{brand.plan.name}</p>
+              </div>
+              <div className="flex items-center justify-center p-2.5 xl:p-5">
+                <p className="text-black dark:text-white">
+                  {moment(brand.expiryDate).format("DD-MM-YYYY")}
+                </p>
+              </div>
 
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p
-                className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                  brand.status === "active"
-                    ? "bg-green-500 text-green-600"
-                    : brand.status === "inactive"
-                    ? "bg-red-500 text-red-600"
-                    : brand.status === "expiring"
-                    ? "bg-yellow-500 text-yellow-600"
-                    : brand.status === "expired"
-                    ? "bg-gray-500 text-gray-600"
-                    : "bg-gray-500 text-gray-700"
-                }`}
-              >
-                {brand.status}
-              </p>
+              <div className="flex items-center justify-center p-2.5 xl:p-5">
+                <p
+                  className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                    brand.status === "active"
+                      ? "bg-green-500 text-green-600"
+                      : brand.status === "inactive"
+                      ? "bg-red-500 text-red-600"
+                      : brand.status === "expiring"
+                      ? "bg-yellow-500 text-yellow-600"
+                      : brand.status === "expired"
+                      ? "bg-gray-500 text-gray-600"
+                      : "bg-gray-500 text-gray-700"
+                  }`}
+                >
+                  {brand.status}
+                </p>
+              </div>
             </div>
-          </div>
-        )) : (
+          ))
+        ) : (
           <div className="flex items-center justify-center p-2.5 xl:p-5">
             <p className="text-black dark:text-white">No Subscriptions</p>
           </div>
